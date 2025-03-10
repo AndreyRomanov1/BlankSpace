@@ -1,0 +1,11 @@
+/.idea/
+/Domain/bin/
+/Domain/obj/
+/Web/bin/
+/Web/obj/
+/DAL/bin/
+/DAL/obj/
+/Infrastructure/bin/
+/Infrastructure/obj/
+/DomainTests/bin/
+/DomainTests/obj/
