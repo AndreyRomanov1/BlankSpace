@@ -7,8 +7,5 @@ public class EndIfToken(Paragraph paragraph, int startIndex, int endIndex, strin
 {
     public override TokenType GetTokenType() => TokenType.EndIf;
 
-    public static string GetPattern()
-    {
-        return @"\{КОНЕЦ\s+ЕСЛИ\}";
-    }
+    public static string GetPattern() => @"\{КОНЕЦ\s+ЕСЛИ\}";
 }

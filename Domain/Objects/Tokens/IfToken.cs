@@ -7,8 +7,5 @@ public class IfToken(Paragraph paragraph, int startIndex, int endIndex, string t
 {
     public override TokenType GetTokenType() => TokenType.If;
 
-    public static string GetPattern()
-    {
-        return @"\{ЕСЛИ\s+\([^\)]+\)\s+\([^\)]+\)\}";
-    }
+    public static string GetPattern() => @"\{ЕСЛИ\s+\([^\)]+\)\s+\([^\)]+\)\}";
 }

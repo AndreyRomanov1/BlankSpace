@@ -7,8 +7,5 @@ public class InputToken(Paragraph paragraph, int startIndex, int endIndex, strin
 {
     public override TokenType GetTokenType() => TokenType.Input;
 
-    public static string GetPattern()
-    {
-        return @"\{ВВОД\s+\([^\)]+\)\}";
-    }
+    public static string GetPattern() => @"\{ВВОД\s+\([^\)]+\)\}";
 }
