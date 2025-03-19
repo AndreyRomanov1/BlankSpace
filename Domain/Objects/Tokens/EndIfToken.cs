@@ -5,10 +5,7 @@ namespace Domain.Objects.Tokens;
 public class EndIfToken(Paragraph paragraph, int startIndex, int endIndex, string text)
     : Token(paragraph, startIndex, endIndex, text)
 {
-    public override TokenType GetTokenType()
-    {
-        return TokenType.EndIf;
-    }
+    public override TokenType GetTokenType() => TokenType.EndIf;
 
     public static string GetPattern()
     {

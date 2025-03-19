@@ -5,10 +5,7 @@ namespace Domain.Objects.Tokens;
 public class IfToken(Paragraph paragraph, int startIndex, int endIndex, string text)
     : Token(paragraph, startIndex, endIndex, text)
 {
-    public override TokenType GetTokenType()
-    {
-        return TokenType.If;
-    }
+    public override TokenType GetTokenType() => TokenType.If;
 
     public static string GetPattern()
     {
