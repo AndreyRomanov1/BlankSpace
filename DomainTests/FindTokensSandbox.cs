@@ -10,6 +10,7 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
     [Theory]
     [InlineData("test_doc_1.docx")]
     [InlineData("test_doc_2.docx")]
+    [InlineData("test_doc_3.docx")]
     public void FindTokens(string filePath)
     {
         var service = GetTokenParsingService();
@@ -30,6 +31,7 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine("");
         }
 
+        testOutputHelper.WriteLine("----------------------------");
         foreach (var token in tokens)
         {
             token.Paragraph.ReplaceText(
