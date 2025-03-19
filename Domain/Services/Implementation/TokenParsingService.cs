@@ -1,0 +1,37 @@
+using System.Text.RegularExpressions;
+using Domain.Objects.Tokens;
+using Domain.Services.Interfaces;
+using Xceed.Words.NET;
+
+namespace Domain.Services.Implementation;
+
+public class TokenParsingService(ITokenFactory tokenFactory) : ITokenParsingService
+{
+    public Token[] FindTokens(DocX document)
+    {
+        var foundTokens = new List<Token>();
+        var tokenTypes = tokenFactory.GetSupportedTokens();
+        foreach (var paragraph in document.Paragraphs)
+        {
+            var paragraphText = paragraph.Text;
+            foreach (var (tokenType, tokenRegex) in tokenTypes)
+            {
+                var regex = new Regex(tokenRegex, RegexOptions.IgnoreCase);
+                var matches = regex.Matches(paragraphText);
+                foreach (Match match in matches)
+                {
+                    var token = tokenFactory.CreateToken(
+                        tokenType,
+                        paragraph,
+                        match.Index,
+                        match.Index + match.Length - 1,
+                        match.Value);
+
+                    foundTokens.Add(token);
+                }
+            }
+        }
+
+        return foundTokens.ToArray();
+    }
+}
