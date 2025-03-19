@@ -7,9 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Repositories\Interfaces\" />
-      <Folder Include="Services\Implementation\" />
-      <Folder Include="Services\Interfaces\" />
+        <Folder Include="Repositories\Interfaces\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DocX" Version="4.0.25105.5786"/>
     </ItemGroup>
 
 </Project>
