@@ -35,6 +35,8 @@ public class BlocksService : IBlocksService
 
                     var endIfToken = (EndIfToken)tokens[endIfIndex.Value];
                     var ifBlock = new IfBlock(ifToken, endIfToken, childBlocks);
+                    foreach (var childBlock in childBlocks)
+                        childBlock.ParentBlock = ifBlock;
                     blockList.Add(ifBlock);
                     i = endIfIndex.Value;
                     break;
