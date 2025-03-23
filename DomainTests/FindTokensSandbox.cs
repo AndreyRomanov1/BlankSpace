@@ -11,6 +11,7 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
     [InlineData("test_doc_1.docx")]
     [InlineData("test_doc_2.docx")]
     [InlineData("test_doc_3.docx")]
+    [InlineData("test_doc_4.docx")]
     public void FindTokens(string filePath)
     {
         var service = GetTokenParsingService();
@@ -25,8 +26,8 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine($"Стартовый индекс параграфа: {token.Paragraph.StartIndex}");
             testOutputHelper.WriteLine($"Конечный индекс параграфа: {token.Paragraph.EndIndex}");
             testOutputHelper.WriteLine($"Параграф (класс): {token.Paragraph}");
-            testOutputHelper.WriteLine($"Предыдущий параграф: {token.Paragraph.PreviousParagraph.Text}");
-            testOutputHelper.WriteLine($"Следующий параграф: {token.Paragraph.NextParagraph.Text}");
+            testOutputHelper.WriteLine($"Предыдущий параграф: {token.Paragraph.PreviousParagraph?.Text}");
+            testOutputHelper.WriteLine($"Следующий параграф: {token.Paragraph.NextParagraph?.Text}");
             testOutputHelper.WriteLine($"Начальный индекс: {token.StartIndex}, Конечный индекс: {token.EndIndex}");
             testOutputHelper.WriteLine("");
         }
@@ -46,8 +47,8 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine($"Стартовый индекс параграфа: {token.Paragraph.StartIndex}");
             testOutputHelper.WriteLine($"Конечный индекс параграфа: {token.Paragraph.EndIndex}");
             testOutputHelper.WriteLine($"Параграф (класс): {token.Paragraph}");
-            testOutputHelper.WriteLine($"Предыдущий параграф: {token.Paragraph.PreviousParagraph.Text}");
-            testOutputHelper.WriteLine($"Следующий параграф: {token.Paragraph.NextParagraph.Text}");
+            testOutputHelper.WriteLine($"Предыдущий параграф: {token.Paragraph.PreviousParagraph?.Text}");
+            testOutputHelper.WriteLine($"Следующий параграф: {token.Paragraph.NextParagraph?.Text}");
             testOutputHelper.WriteLine($"Начальный индекс: {token.StartIndex}, Конечный индекс: {token.EndIndex}");
             testOutputHelper.WriteLine("");
         }
