@@ -1,4 +1,5 @@
-﻿<Solution>
+    <Project Path="Web\Web.csproj" Type="Classic C#" />
+<Solution>
     <Folder Name="/src/">
         <Project Path="DAL\DAL.csproj" Type="Classic C#"/>
         <Project Path="Domain\Domain.csproj" Type="Classic C#"/>
