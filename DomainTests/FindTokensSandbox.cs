@@ -1,3 +1,4 @@
+using Domain.Objects.Tokens;
 using Domain.Services.Implementation;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
@@ -29,6 +30,9 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine($"Предыдущий параграф: {token.Paragraph.PreviousParagraph?.Text}");
             testOutputHelper.WriteLine($"Следующий параграф: {token.Paragraph.NextParagraph?.Text}");
             testOutputHelper.WriteLine($"Начальный индекс: {token.StartIndex}, Конечный индекс: {token.EndIndex}");
+            testOutputHelper.WriteLine($"Вопрос: <{token.QuestionText}>");
+            if (token is IfToken ifToken)
+                testOutputHelper.WriteLine($"Ответ: <{ifToken.AnswerText}>");
             testOutputHelper.WriteLine("");
         }
 
@@ -50,6 +54,9 @@ public class FindTokensSandbox(ITestOutputHelper testOutputHelper)
             testOutputHelper.WriteLine($"Предыдущий параграф: {token.Paragraph.PreviousParagraph?.Text}");
             testOutputHelper.WriteLine($"Следующий параграф: {token.Paragraph.NextParagraph?.Text}");
             testOutputHelper.WriteLine($"Начальный индекс: {token.StartIndex}, Конечный индекс: {token.EndIndex}");
+            testOutputHelper.WriteLine($"Вопрос: <{token.QuestionText}>");
+            if (token is IfToken ifToken)
+                testOutputHelper.WriteLine($"Ответ: <{ifToken.AnswerText}>");
             testOutputHelper.WriteLine("");
         }
     }

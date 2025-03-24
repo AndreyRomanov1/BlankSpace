@@ -11,8 +11,13 @@ public class IfBlock(
     public EndIfToken EndIfToken { get; } = endIfToken;
     public Block[] ChildBlocks { get; } = childBlocks;
 
-    public override BlockType GetBlockType() => BlockType.IfBlock;
+    public override BlockType GetBlockType()
+    {
+        return BlockType.IfBlock;
+    }
 
-    public override string ToString() =>
-        $"{base.ToString()}_<{string.Join(",  ", ChildBlocks.Select(t => t.ToString()))}>";
+    public override string ToString()
+    {
+        return $"{base.ToString()}_<{string.Join(",  ", ChildBlocks.Select(t => t.ToString()))}>";
+    }
 }

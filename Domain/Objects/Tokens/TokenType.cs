@@ -4,5 +4,5 @@ public enum TokenType
 {
     If,
     EndIf,
-    Input,
+    Input
 }

@@ -16,8 +16,7 @@ public class TokenParsingService(ITokenFactory tokenFactory) : ITokenParsingServ
             var paragraphText = paragraph.Text;
             foreach (var (tokenType, tokenRegex) in tokenTypes)
             {
-                var regex = new Regex(tokenRegex, RegexOptions.IgnoreCase);
-                var matches = regex.Matches(paragraphText);
+                var matches = tokenRegex.Matches(paragraphText);
                 foreach (Match match in matches)
                 {
                     var token = tokenFactory.CreateToken(

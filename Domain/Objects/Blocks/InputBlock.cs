@@ -5,5 +5,8 @@ namespace Domain.Objects.Blocks;
 public class InputBlock(
     InputToken inputToken) : Block(inputToken)
 {
-    public override BlockType GetBlockType() => BlockType.InputBlock;
+    public override BlockType GetBlockType()
+    {
+        return BlockType.InputBlock;
+    }
 }

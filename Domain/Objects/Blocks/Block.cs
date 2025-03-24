@@ -8,5 +8,9 @@ public abstract class Block(Token mainToken)
     public Block? ParentBlock { get; set; } = null;
 
     public abstract BlockType GetBlockType();
-    public override string ToString() => $"{GetBlockType()}_{MainToken.Text}";
+
+    public override string ToString()
+    {
+        return $"{GetBlockType()}_{MainToken.Text}";
+    }
 }
