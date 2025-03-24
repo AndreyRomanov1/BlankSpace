@@ -28,7 +28,10 @@
         <Content Include="bin\Debug\net8.0\test_doc_2.docx"/>
         <Content Include="bin\Debug\net8.0\test_doc_3.docx"/>
         <Content Include="bin\Debug\net8.0\test_doc_4.docx"/>
+<<<<<<< HEAD
         <Content Include="bin\Debug\net8.0\test_doc_5.docx" />
+=======
+>>>>>>> 2e8e1d9 (добавил в токены возможность вытащить текст самого вопроса, для опроса)
     </ItemGroup>
 
     <ItemGroup>

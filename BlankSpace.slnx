@@ -1,5 +1,9 @@
+<<<<<<< HEAD
     <Project Path="Web\Web.csproj" Type="Classic C#" />
 <Solution>
+=======
+﻿<Solution>
+>>>>>>> 2e8e1d9 (добавил в токены возможность вытащить текст самого вопроса, для опроса)
     <Folder Name="/src/">
         <Project Path="DAL\DAL.csproj" Type="Classic C#"/>
         <Project Path="Domain\Domain.csproj" Type="Classic C#"/>

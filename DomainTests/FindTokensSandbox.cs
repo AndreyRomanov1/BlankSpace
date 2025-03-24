@@ -1,5 +1,9 @@
 using Domain.Objects.Tokens;
+<<<<<<< HEAD
 using Domain.Services.Implementations;
+=======
+using Domain.Services.Implementation;
+>>>>>>> 2e8e1d9 (добавил в токены возможность вытащить текст самого вопроса, для опроса)
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using Xunit.Abstractions;

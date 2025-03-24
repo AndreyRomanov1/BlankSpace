@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 using Domain.Objects.Blocks;
 
 namespace Domain.Objects.Questions;
@@ -24,4 +25,10 @@ public class IfAnswer(string answer)
     public string Answer { get; } = answer;
     public Question[] SubQuestions { get; set; }
     public List<IfBlock> Blocks { get; } = [];
+=======
+namespace Domain.Objects.Questions;
+
+public class IfQuestion : Question
+{
+>>>>>>> 2e8e1d9 (добавил в токены возможность вытащить текст самого вопроса, для опроса)
 }
