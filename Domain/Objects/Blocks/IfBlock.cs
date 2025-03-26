@@ -8,6 +8,7 @@ public class IfBlock(
     Block[] childBlocks)
     : Block(ifToken)
 {
+    public IfToken IfToken { get; } = ifToken;
     public EndIfToken EndIfToken { get; } = endIfToken;
     public Block[] ChildBlocks { get; } = childBlocks;
 
