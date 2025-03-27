@@ -3,7 +3,7 @@ using Domain.Objects.Tokens;
 using Domain.Services.Interfaces;
 using Xceed.Words.NET;
 
-namespace Domain.Services.Implementation;
+namespace Domain.Services.Implementations;
 
 public class TokenParsingService(ITokenFactory tokenFactory) : ITokenParsingService
 {

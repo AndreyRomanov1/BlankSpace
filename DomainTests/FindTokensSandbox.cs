@@ -1,5 +1,5 @@
 using Domain.Objects.Tokens;
-using Domain.Services.Implementation;
+using Domain.Services.Implementations;
 using Xceed.Document.NET;
 using Xceed.Words.NET;
 using Xunit.Abstractions;

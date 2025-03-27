@@ -1,4 +1,4 @@
-using Domain.Services.Implementation;
+using Domain.Services.Implementations;
 using Xceed.Words.NET;
 using Xunit.Abstractions;
 

@@ -2,7 +2,7 @@ using Domain.Objects.Blocks;
 using Domain.Objects.Questions;
 using Domain.Services.Interfaces;
 
-namespace Domain.Services.Implementation;
+namespace Domain.Services.Implementations;
 
 public class QuestionService : IQuestionService
 {
