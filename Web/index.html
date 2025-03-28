@@ -6,10 +6,32 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-  <header class="header">
-    <img src="logo.png" alt="logo" class="logo">
-    <h1 class="nameFile">Название файла</h1>
-    <button class="btnDone">Готово</button>
-  </header>
+    <header class="header">
+        <img src="logo.png" alt="logo" class="logo">
+        <h1 class="nameFile">Название файла</h1>
+        <button class="btnDone">Готово</button>
+    </header>
+    <main class="main">
+        <div class="block">
+            <p class="question">Вопрос</p>
+            <div class="answerRadiobtn">
+                <input type="radio" id="radio1" name="radio" value="radio1">
+                <label for="radio1">ответ1</label>
+            </div>
+            <div class="answerRadiobtn">
+                <input type="radio" id="radio2" name="radio" value="radio2">
+                <label for="radio2">ответ2</label>
+            </div>
+            <div class="answerRadiobtn">
+                <input type="radio" id="radio3" name="radio" value="radio3">
+                <label for="radio3">ответ3</label>
+            </div>
+        </div>
+
+        <div class="block">
+            <p class="question">Вопрос</p>
+            <input type="text" placeholder="Подсказка" class="writeAnswer">
+        </div>
+    </main>
 </body>
 </html>
