@@ -1,0 +1,31 @@
+body {
+    background-image: url("background_image.png");
+    margin: 0;
+}
+
+header {
+    display: flex;
+    background-color: rgba(255, 255, 255, 0.5);
+    align-items: center;
+    height: 60px;
+}
+
+.logo {
+    height: 48px;
+    margin-left: 58px;
+}
+
+.nameFile {
+    color: white;
+    margin: auto;
+}
+
+.btnDone {
+    background-color: #1AC14C;
+    border: none;
+    width: 100px;
+    height: 40px;
+    border-radius: 10px;
+    color: white;
+    margin-right: 58px;
+}
