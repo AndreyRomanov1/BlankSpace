@@ -1,0 +1,11 @@
+﻿<Solution>
+    <Folder Name="/src/">
+        <Project Path="DAL\DAL.csproj" Type="Classic C#"/>
+        <Project Path="Domain\Domain.csproj" Type="Classic C#"/>
+        <Project Path="Infrastructure\Infrastructure.csproj" Type="Classic C#"/>
+        <Project Path="Web\Web.csproj" Type="Classic C#"/>
+    </Folder>
+    <Folder Name="/tests/">
+        <Project Path="DomainTests\DomainTests.csproj" Type="Classic C#"/>
+    </Folder>
+</Solution>

@@ -12,8 +12,11 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Configuration\" />
-      <Folder Include="Controllers\" />
+        <Folder Include="Dto\Request\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Domain\Domain.csproj" />
     </ItemGroup>
 
 </Project>

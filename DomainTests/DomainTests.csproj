@@ -10,6 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="DocX" Version="4.0.25105.5786"/>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
         <PackageReference Include="xunit" Version="2.4.2"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
@@ -20,6 +21,18 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="bin\Debug\net8.0\test_doc_1.docx"/>
+        <Content Include="bin\Debug\net8.0\test_doc_2.docx"/>
+        <Content Include="bin\Debug\net8.0\test_doc_3.docx"/>
+        <Content Include="bin\Debug\net8.0\test_doc_4.docx"/>
+        <Content Include="bin\Debug\net8.0\test_doc_5.docx" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
     </ItemGroup>
 
 </Project>

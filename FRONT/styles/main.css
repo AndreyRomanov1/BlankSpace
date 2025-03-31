@@ -1,32 +1,98 @@
-/* Основные стили для контента */
 .main__container {
-  padding: 30px 0;
+  padding: 30px 15px;
   background-color: #f4f6f8;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+#questionsContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
 .question-block {
-  margin-bottom: 20px;
-  padding: 20px;
+  margin-bottom: 15px;
+  padding: 15px;
   background-color: #ffffff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.question-block:last-child {
+  margin-bottom: 0;
+}
+
+.question-block:hover {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
 }
 
 .question-block h3 {
-  font-size: 20px;
+  font-size: 18px;
   margin-bottom: 15px;
   color: #333;
+  font-weight: 600;
 }
 
-.answer-btn {
-  margin: 5px;
-  padding: 10px 20px;
-  background: #f8f8f8;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.answer-container {
+  margin-bottom: 10px;
+}
+
+.answer-option {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
   cursor: pointer;
-  transition: background 0.3s;
+}
+
+.answer-option input[type="radio"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+
+.answer-option label {
+  font-size: 16px;
+  color: #444;
+  cursor: pointer;
+}
+
+.answer-input {
+  padding: 10px 12px;
+  background: #fdfdfd;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+.answer-input:focus {
+  border-color: #4caf50;
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  outline: none;
+}
+
+.subquestion-outer-container {
+  margin-top: 15px;
+  padding-top: 10px;
+}
+
+.subquestion-container {
+  padding-left: 20px;
+  border-left: 2px solid #e0e0e0;
+  margin-left: 10px;
+}
+
+hr.subquestion-separator {
+  border: none;
+  border-top: 1px dashed #ccc;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .answer-btn:hover {
@@ -47,6 +113,9 @@
   cursor: pointer;
   font-size: 16px;
   transition: background 0.3s;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 #submitBtn:hover {
@@ -64,13 +133,11 @@
   background: #ffffff;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 16px;
+  font-size: 14px;
   color: #333;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-#surveyContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
+  font-family: Consolas, monospace;
+  max-height: 400px;
+  overflow-y: auto;
 }
