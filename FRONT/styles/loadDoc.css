@@ -1,0 +1,38 @@
+body {
+    background-image: url("../images/background_image.png");
+    color: white;
+    display: flex;
+    margin: 3%;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+
+}
+
+.load_container {
+    box-sizing: border-box;
+    width: 1062px;
+    height: 414px;
+    border-radius: 26px;
+    background-color: rgba(255, 255, 255, 0.5);
+    margin-top: 70px;
+    text-align: center;
+    padding-top: 65px;
+    cursor: pointer;
+}
+
+.img_load {
+    width: 176px;
+    height: 176px;
+}
+
+.text_load {
+    font-family: Inter, sans-serif;
+    font-size: 30px;
+}
+
+.text_new_doc {
+    font-family: Inter, sans-serif;
+    font-size: 45px;
+}
+

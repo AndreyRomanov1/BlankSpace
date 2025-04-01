@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blank Space</title>
+  <link rel="stylesheet" href="styles/loadDoc.css" />
+</head>
+<body>
+  <h2 class="text_new_doc">Новый документ</h2>
+  <div class="load_container" id="dropZone">
+    <img src="images/loadDocument.png" alt="load document" class="img_load" />
+    <p class="text_load">Перенесите сюда файл шаблона или кликните для выбора</p>
+    <input type="file" id="fileInput" style="display: none;" />
+  </div>
+
+  <script>
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+
+    // Обработчики для Drag and Drop
+    dropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      dropZone.classList.add('drag-over');
+    });
+
+    dropZone.addEventListener('dragleave', () => {
+      dropZone.classList.remove('drag-over');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+
+      if (e.dataTransfer.files.length) {
+        handleFiles(e.dataTransfer.files);
+      }
+    });
+
+    // Обработчик клика для выбора файла
+    dropZone.addEventListener('click', () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files.length) {
+        handleFiles(fileInput.files);
+      }
+    });
+
+    // Функция для обработки выбранных/перетащенных файлов
+    function handleFiles(files) {
+      const file = files[0];
+      if (file) {
+        alert(`Файл "${file.name}" успешно выбран!`);
+        // Здесь можно добавить логику загрузки файла (например, через FormData и Fetch API)
+        console.log(file);
+      }
+    }
+  </script>
+</body>
+</html>
