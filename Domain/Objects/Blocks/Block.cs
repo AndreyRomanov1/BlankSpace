@@ -1,4 +1,3 @@
-{
 using Domain.Objects.Tokens;
 
 namespace Domain.Objects.Blocks;

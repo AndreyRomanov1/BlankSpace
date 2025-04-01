@@ -1,9 +1,21 @@
+body {
+  background-image: url("../images/background_image.png");
+  margin: 0;
+}
+
 .main__container {
   padding: 30px 15px;
-  background-color: #f4f6f8;
+  background-color: transparent;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 45px auto;
 }
+
+/*.main {*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  flex-direction: column;*/
+/*  overflow-y: scroll;*/
+/*}*/
 
 #questionsContainer {
   display: flex;
@@ -12,13 +24,14 @@
 }
 
 .question-block {
-  margin-bottom: 15px;
-  padding: 15px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.2s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px auto 0 auto;
+  color: white;
 }
 
 .question-block:last-child {
@@ -32,7 +45,7 @@
 .question-block h3 {
   font-size: 18px;
   margin-bottom: 15px;
-  color: #333;
+  color: #fff;
   font-weight: 600;
 }
 
@@ -56,7 +69,7 @@
 
 .answer-option label {
   font-size: 16px;
-  color: #444;
+  color: #fff;
   cursor: pointer;
 }
 
@@ -64,7 +77,7 @@
   padding: 10px 12px;
   background: #fdfdfd;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 10px;
   transition: border-color 0.3s, box-shadow 0.3s;
   width: 100%;
   box-sizing: border-box;
@@ -72,27 +85,23 @@
 }
 
 .answer-input:focus {
-  border-color: #4caf50;
-  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+  border-color: #000000;
   outline: none;
 }
 
 .subquestion-outer-container {
-  margin-top: 15px;
-  padding-top: 10px;
 }
 
 .subquestion-container {
-  padding-left: 20px;
-  border-left: 2px solid #e0e0e0;
-  margin-left: 10px;
+  padding-bottom: 10px;
 }
 
 hr.subquestion-separator {
   border: none;
-  border-top: 1px dashed #ccc;
+  border-top: 5px solid #fff;
   margin-top: 15px;
   margin-bottom: 15px;
+  border-radius: 3px;
 }
 
 .answer-btn:hover {
@@ -106,7 +115,7 @@ hr.subquestion-separator {
 #submitBtn {
   margin-top: 30px;
   padding: 12px 30px;
-  background: #4caf50;
+  background: #1AC14C;
   color: white;
   border: none;
   border-radius: 8px;
@@ -119,7 +128,7 @@ hr.subquestion-separator {
 }
 
 #submitBtn:hover {
-  background: #45a049;
+  background: #00dd09;
 }
 
 #submitBtn:active {

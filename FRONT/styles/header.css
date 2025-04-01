@@ -1,8 +1,22 @@
-/* Стили для шапки */
 .header {
-  background-color: #282c34;
-  color: #fff;
-  padding: 20px 0;
+  background-color: rgba(164,172,206);
+  height: 60px;
+  padding-top: 5px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+}
+
+.logo {
+  height: 48px;
+  margin-left: -80px;
+}
+
+.nameFile {
+  color: white;
+  font-size: 20px;
 }
 
 .header__container {
@@ -14,30 +28,26 @@
   padding: 0 15px;
 }
 
-.logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #4caf50;
-  cursor: pointer;
-}
+
 
 .upload,
 .show {
   cursor: pointer;
   padding: 10px 20px;
-  background-color: #4caf50;
+  background-color: #1AC14C;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   transition: background-color 0.3s;
 }
 
+
 .upload:hover,
 .show:hover {
-  background-color: #45a049;
+  background-color: #00dd09;
 }
 
 .upload:active,
 .show:active {
-  background-color: #388e3c;
+  background-color: #00dd09;
 }
