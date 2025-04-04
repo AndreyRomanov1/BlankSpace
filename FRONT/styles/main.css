@@ -1,6 +1,10 @@
 body {
   background-image: url("../images/background_image.png");
   margin: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
 .main__container {
