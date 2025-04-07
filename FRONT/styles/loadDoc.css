@@ -15,7 +15,7 @@ body {
     height: 414px;
     border-radius: 26px;
     background-color: rgba(255, 255, 255, 0.5);
-    margin-top: 70px;
+    margin-top: 45px;
     text-align: center;
     padding-top: 65px;
     cursor: pointer;
@@ -34,5 +34,9 @@ body {
 .text_new_doc {
     font-family: Inter, sans-serif;
     font-size: 45px;
+}
+
+.create {
+    margin-top: 41px;
 }
 

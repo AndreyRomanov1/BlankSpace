@@ -264,7 +264,7 @@ function generateContract() {
 }
 
 function main() {
-  const showBtn = document.querySelector(".show");
+  const showBtn = document.querySelector(".create");
   const submitBtn = document.getElementById("submitBtn");
 
   showBtn.addEventListener("click", () => {
