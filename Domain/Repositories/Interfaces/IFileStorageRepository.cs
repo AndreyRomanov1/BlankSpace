@@ -5,5 +5,5 @@ namespace Domain.Repositories.Interfaces;
 public interface IFileStorageRepository
 {
     public Guid AddFile(ContentFile contentFile, TimeSpan timeToLive);
-    public ContentFile GetFile(Guid id);
+    public ContentFile GetFile(Guid fileId);
 }

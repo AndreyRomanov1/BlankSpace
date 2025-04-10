@@ -26,23 +26,23 @@ public class FileStorageRepository : IFileStorageRepository, IDisposable
         contentFile.Stream.CopyTo(memoryStream);
         var fileData = memoryStream.ToArray();
 
-        var id = Guid.NewGuid();
+        var fileId = Guid.NewGuid();
         var expiryTime = DateTime.UtcNow.Add(timeToLive);
 
         lock (lockObj)
         {
-            storage[id] = new FileEntry(contentFile.Name, fileData, expiryTime);
+            storage[fileId] = new FileEntry(contentFile.Name, fileData, expiryTime);
         }
 
-        return id;
+        return fileId;
     }
 
-    public ContentFile GetFile(Guid id)
+    public ContentFile GetFile(Guid fileId)
     {
         lock (lockObj)
         {
-            if (!storage.TryGetValue(id, out var entry))
-                throw new NotFoundException();
+            if (!storage.TryGetValue(fileId, out var entry))
+                throw new NotFoundException($"Not found file by fileId=<{fileId}>");
             return new ContentFile(entry.filename, new MemoryStream(entry.Content, false));
         }
     }

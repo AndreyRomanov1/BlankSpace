@@ -28,12 +28,12 @@ public class FileStorageController(IFileStorageRepository fileStorageRepository)
         }
     }
 
-    [HttpGet("{id:guid}")]
-    public IActionResult DownloadFile(Guid id)
+    [HttpGet("{fileId:guid}")]
+    public IActionResult DownloadFile(Guid fileId)
     {
         try
         {
-            var contentFile = fileStorageRepository.GetFile(id);
+            var contentFile = fileStorageRepository.GetFile(fileId);
 
             return File(contentFile.Stream, "application/octet-stream", contentFile.Name);
         }

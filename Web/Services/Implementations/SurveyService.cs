@@ -1,3 +1,5 @@
+using Domain.Exceptions;
+using Domain.Repositories.Interfaces;
 using Domain.Services.Interfaces;
 using Web.Dto.Response;
 using Web.MappingExtensions.Survey;
@@ -9,12 +11,16 @@ namespace Web.Services.Implementations;
 public class SurveyService(
     ITokenParsingService tokenParsingService,
     IBlocksService blocksService,
-    IQuestionService questionService
+    IQuestionService questionService,
+    IFileStorageRepository fileStorageRepository
 ) : ISurveyService
 {
-    public Survey GetSurveyByDocx(Stream fileStream)
+    public Survey GetSurveyByDocx(Guid fileId)
     {
-        using var doc = DocX.Load(fileStream);
+        var contentFile = fileStorageRepository.GetFile(fileId);
+        if (!Path.GetExtension(contentFile.Name).Equals(".docx", StringComparison.CurrentCultureIgnoreCase))
+            throw new BadRequestException("Invalid file format. Only DOCX allowed");
+        using var doc = DocX.Load(contentFile.Stream);
         var tokens = tokenParsingService.FindTokens(doc);
         var blocks = blocksService.GroupTokensToBlocks(tokens);
         var questions = questionService.GetQuestions(blocks);
