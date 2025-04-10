@@ -4,5 +4,5 @@ namespace Web.Services.Interfaces;
 
 public interface ISurveyService
 {
-      Response.Survey GetSurveyByDocx(Stream fileStream);
+    Response.Survey GetSurveyByDocx(Stream fileStream);
 }

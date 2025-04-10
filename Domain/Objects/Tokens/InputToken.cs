@@ -6,7 +6,10 @@ namespace Domain.Objects.Tokens;
 public partial class InputToken(Paragraph paragraph, int startIndex, int endIndex, string text)
     : Token(paragraph, startIndex, endIndex, text, ExtractQuestionText(text))
 {
-    public override TokenType GetTokenType() => TokenType.Input;
+    public override TokenType GetTokenType()
+    {
+        return TokenType.Input;
+    }
 
     private static string ExtractQuestionText(string text)
     {

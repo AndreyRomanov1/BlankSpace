@@ -3,12 +3,15 @@ using Web.Configuration;
 var builder = WebApplication.CreateBuilder(args);
 
 
-builder.Services.ConfigureDomainServices();
-builder.Services.ConfigureWebServices();
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
+builder.Services.ConfigureDomainServices();
+builder.Services.ConfigureDALServices();
+builder.Services.ConfigureWebServices();
+
 
 var app = builder.Build();
 
@@ -22,7 +25,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.MapControllers();
-
 
 app.Run();
 

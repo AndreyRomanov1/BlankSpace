@@ -6,6 +6,8 @@ public class IfQuestion(string name) : Question(name)
 {
     public override QuestionType Type => QuestionType.IfQuestion;
 
+    public Dictionary<string, IfAnswer> Answers { get; } = new();
+
     public override QuestionView GetView()
     {
         return new QuestionView(
@@ -15,8 +17,6 @@ public class IfQuestion(string name) : Question(name)
                 t => t.Value.SubQuestions.Select(t2 => t2.GetView()).ToArray()),
             QuestionType.IfQuestion);
     }
-
-    public Dictionary<string, IfAnswer> Answers { get; } = new();
 }
 
 public class IfAnswer(string answer)

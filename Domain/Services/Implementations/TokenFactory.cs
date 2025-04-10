@@ -11,7 +11,7 @@ public class TokenFactory : ITokenFactory
     {
         [TokenType.If] = IfToken.MyRegex(),
         [TokenType.EndIf] = EndIfToken.MyRegex(),
-        [TokenType.Input] = InputToken.MyRegex(),
+        [TokenType.Input] = InputToken.MyRegex()
     };
 
     public Token CreateToken(TokenType tokenType, Paragraph paragraph, int startIndex, int endIndex, string text)
