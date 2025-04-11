@@ -12,11 +12,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Dto\Request\" />
+        <Folder Include="Dto\Request\"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Domain\Domain.csproj" />
+        <ProjectReference Include="..\DAL\DAL.csproj"/>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
     </ItemGroup>
 
 </Project>

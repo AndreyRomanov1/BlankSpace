@@ -1,3 +1,4 @@
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 using Web.Services.Interfaces;
 using Response = Web.Dto.Response;
@@ -8,20 +9,21 @@ namespace Web.Controllers;
 [Route("api/[controller]")]
 public class SurveyController(ISurveyService surveyService) : ControllerBase
 {
-    [HttpPost("upload")]
-    public async Task<ActionResult<Response.Survey>> UploadDocx(IFormFile file)
+    [HttpGet]
+    public async Task<ActionResult<Response.Survey>> GetSurvey(Guid fileId)
     {
-        if (file.Length == 0)
-            return BadRequest("No file uploaded");
-
-        if (Path.GetExtension(file.FileName).ToLower() != ".docx")
-            return BadRequest("Invalid file format. Only DOCX allowed");
-        var fileStream = new MemoryStream();
-        await file.CopyToAsync(fileStream);
         try
         {
-            var survey = surveyService.GetSurveyByDocx(fileStream);
+            var survey = surveyService.GetSurveyByDocx(fileId);
             return survey;
+        }
+        catch (NotFoundException ex)
+        {
+            return StatusCode(404, ex.Message);
+        }
+        catch (ArgumentException ex)
+        {
+            return StatusCode(400, ex.Message);
         }
         catch
         {

@@ -8,7 +8,10 @@ public partial class IfToken(Paragraph paragraph, int startIndex, int endIndex, 
 {
     public string AnswerText { get; } = ExtractAnswer(text);
 
-    public override TokenType GetTokenType() => TokenType.If;
+    public override TokenType GetTokenType()
+    {
+        return TokenType.If;
+    }
 
     private static string ExtractQuestionText(string text)
     {

@@ -9,7 +9,10 @@
     <ItemGroup>
         <Folder Include="Entities\"/>
         <Folder Include="Migrations\"/>
-        <Folder Include="Repositories\Implementation\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
     </ItemGroup>
 
 </Project>

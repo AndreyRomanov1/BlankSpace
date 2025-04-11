@@ -22,7 +22,6 @@ public class QuestionService : IQuestionService
             var questionType = block.GetBlockType().ToQuestionType();
             if (!parentQuestions.TryGetValue((block.MainToken.QuestionText, questionType), out var question)
                 && !currentQuestions.TryGetValue((block.MainToken.QuestionText, questionType), out question))
-            {
                 switch (block)
                 {
                     case IfBlock ifBlock:
@@ -43,9 +42,7 @@ public class QuestionService : IQuestionService
                     default:
                         throw new ArgumentOutOfRangeException($"Не поддерживается блок {block.GetBlockType()}");
                 }
-            }
             else
-            {
                 switch (block)
                 {
                     case IfBlock ifBlock:
@@ -71,7 +68,6 @@ public class QuestionService : IQuestionService
                     default:
                         throw new ArgumentOutOfRangeException($"Не поддерживается блок {block.GetBlockType()}");
                 }
-            }
         }
 
         var nextParentQuestions = parentQuestions.Concat(currentQuestions).ToDictionary();
