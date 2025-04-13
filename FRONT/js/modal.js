@@ -124,7 +124,6 @@ async function uploadFile(file) {
     currentSurveyName = newSurvey.name;
     changeSurveyHeaderName();
 
-    alert("Файл успешно загружен и опрос создан.");
     closeModal();
   } catch (error) {
     console.error("Upload error:", error);

@@ -7,9 +7,9 @@ body {
   background-attachment: fixed;
 }
 #survey-container {
-  margin: 80px 15px 15px 15px;
-  padding-top: 60px; /* оставляем место для фиксированного хедера */
-}
+  margin: 80px 15px 15px 200px;
+  padding-top: 5px;
+}/* оставляем место для фиксированного хедера */
 .question-block {
   display: flex;
   flex-direction: column;
@@ -104,4 +104,24 @@ hr.subquestion-separator {
   overflow-y: auto;
   left: 200px;
   width: calc(100% - 220px);
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+  background: #A4ACCE;
+  background: linear-gradient(180deg,rgba(164, 172, 206, 1) 0%, rgba(0, 59, 172, 1) 100%);
+  position: absolute;
+  top: 10px;
+}
+
+/* Дорожка скроллбара (фон) */
+::-webkit-scrollbar-track {
+  background: rgba(164, 172, 206);
+  border-radius: 10px;
+}
+
+/* Ползунок скроллбара */
+::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 10px;
 }
