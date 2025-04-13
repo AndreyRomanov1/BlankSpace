@@ -5,6 +5,7 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
+  font-family: Inter, sans-serif;
 }
 #survey-container {
   margin: 80px 15px 15px 200px;
@@ -26,6 +27,14 @@ body {
   color: #fff;
   font-weight: 600;
 }
+
+.subquestion-outer-container .question-block {
+  background-color: transparent;
+  width: 100%;
+  margin-top: 0;
+  padding: 10px;
+}
+
 .answer-container {
   margin-bottom: 10px;
 }
@@ -125,3 +134,8 @@ hr.subquestion-separator {
   background: white;
   border-radius: 10px;
 }
+
+input[type="radio"] {
+  accent-color: #3D69B8;
+}
+
