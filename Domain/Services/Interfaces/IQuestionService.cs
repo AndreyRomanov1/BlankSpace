@@ -1,9 +1,9 @@
 using Domain.Objects.Blocks;
-using Domain.Objects.Questions;
+using Domain.Objects.Survey;
 
 namespace Domain.Services.Interfaces;
 
 public interface IQuestionService
 {
-    public Question[] GetQuestions(Block[] blocks);
+    public Survey GetSurvey(Block[] blocks);
 }

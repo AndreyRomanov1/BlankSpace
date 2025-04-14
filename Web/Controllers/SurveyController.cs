@@ -1,6 +1,7 @@
 using Domain.Exceptions;
+using Domain.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Web.Services.Interfaces;
+using Web.MappingExtensions;
 using Response = Web.Dto.Response;
 
 namespace Web.Controllers;
@@ -15,7 +16,7 @@ public class SurveyController(ISurveyService surveyService) : ControllerBase
         try
         {
             var survey = surveyService.GetSurveyByDocx(fileId);
-            return survey;
+            return survey.ToResponse();
         }
         catch (NotFoundException ex)
         {

@@ -1,13 +1,14 @@
 using Domain.Objects.Questions;
+using Domain.Objects.Survey;
 using Response = Web.Dto.Response;
 
-namespace Web.MappingExtensions.Survey;
+namespace Web.MappingExtensions;
 
 public static class SurveyExtensions
 {
-    public static Response.Survey ToResponse(this Question[] questions)
+    public static Response.Survey ToResponse(this Survey survey)
     {
-        return new Response.Survey(questions.Select(t => t.GetView().ToResponse()).ToArray());
+        return new Response.Survey(survey.Questions.Select(t => t.GetView().ToResponse()).ToArray());
     }
 
     public static Response.Question ToResponse(this QuestionView questionView)

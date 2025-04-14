@@ -1,17 +1,20 @@
 using Domain.Objects.Blocks;
 using Domain.Objects.Questions;
+using Domain.Objects.Survey;
 using Domain.Services.Interfaces;
 
 namespace Domain.Services.Implementations;
 
 public class QuestionService : IQuestionService
 {
-    public Question[] GetQuestions(Block[] blocks)
+    public Survey GetSurvey(Block[] blocks)
     {
-        return GetQuestionsByRecursively(blocks);
+        var questions = GetQuestionsByRecursively(blocks);
+        return new Survey(questions);
     }
 
-    private Question[] GetQuestionsByRecursively(Block[] blocks,
+    private Question[] GetQuestionsByRecursively(
+        Block[] blocks,
         Dictionary<(string, QuestionType), Question>? questionByText = null)
     {
         var parentQuestions = questionByText?.ToDictionary() ?? new Dictionary<(string, QuestionType), Question>();

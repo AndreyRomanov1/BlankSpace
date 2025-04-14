@@ -15,7 +15,7 @@ public class BlocksService : IBlocksService
         return blocks;
     }
 
-    private (Block[] blocks, int? endIndex) GroupTokensToBlocksByRecursively(Token[] tokens, int startIndex = 0)
+    private static (Block[] blocks, int? endIndex) GroupTokensToBlocksByRecursively(Token[] tokens, int startIndex = 0)
     {
         var blockList = new List<Block>();
         if (startIndex >= tokens.Length)

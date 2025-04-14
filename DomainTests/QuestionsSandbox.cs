@@ -20,8 +20,8 @@ public class QuestionsSandbox(ITestOutputHelper testOutputHelper)
         using var doc = DocX.Load(filePath);
         var tokens = tokenParsingService.FindTokens(doc);
         var blocks = blocksService.GroupTokensToBlocks(tokens);
-        var questions = questionService.GetQuestions(blocks);
-        testOutputHelper.WriteLine(string.Join("\n", questions.Select(t => t.GetView().ToString())));
+        var survey = questionService.GetSurvey(blocks);
+        testOutputHelper.WriteLine(string.Join("\n", survey.Questions.Select(t => t.GetView().ToString())));
     }
 
     private static TokenParsingService GetTokenParsingService()

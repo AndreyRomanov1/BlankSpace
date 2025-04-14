@@ -2,11 +2,14 @@ namespace Domain.Objects.Questions;
 
 public class QuestionView(
     string name,
-    Dictionary<string, QuestionView[]> subQuestionByAnswer,
+    Dictionary<string, QuestionView[]>? subQuestionByAnswer,
     QuestionType questionType)
 {
     public string Name { get; } = name;
-    public Dictionary<string, QuestionView[]> SubQuestionByAnswer { get; } = subQuestionByAnswer;
+
+    public Dictionary<string, QuestionView[]> SubQuestionByAnswer { get; } =
+        subQuestionByAnswer ?? new Dictionary<string, QuestionView[]>();
+
     public QuestionType QuestionType { get; } = questionType;
 
     public override string ToString()

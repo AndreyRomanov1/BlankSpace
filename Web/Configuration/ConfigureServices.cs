@@ -2,8 +2,6 @@ using DAL.Repositories.Implementation;
 using Domain.Repositories.Interfaces;
 using Domain.Services.Implementations;
 using Domain.Services.Interfaces;
-using Web.Services.Implementations;
-using Web.Services.Interfaces;
 
 namespace Web.Configuration;
 

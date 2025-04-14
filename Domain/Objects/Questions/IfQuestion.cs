@@ -8,6 +8,8 @@ public class IfQuestion(string name) : Question(name)
 
     public Dictionary<string, IfAnswer> Answers { get; } = new();
 
+    public IfAnswer? SelectedAnswer { get; set; }
+
     public override QuestionView GetView()
     {
         return new QuestionView(

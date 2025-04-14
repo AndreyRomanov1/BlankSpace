@@ -1,12 +1,10 @@
 using Domain.Exceptions;
+using Domain.Objects.Survey;
 using Domain.Repositories.Interfaces;
 using Domain.Services.Interfaces;
-using Web.Dto.Response;
-using Web.MappingExtensions.Survey;
-using Web.Services.Interfaces;
 using Xceed.Words.NET;
 
-namespace Web.Services.Implementations;
+namespace Domain.Services.Implementations;
 
 public class SurveyService(
     ITokenParsingService tokenParsingService,
@@ -23,7 +21,7 @@ public class SurveyService(
         using var doc = DocX.Load(contentFile.Stream);
         var tokens = tokenParsingService.FindTokens(doc);
         var blocks = blocksService.GroupTokensToBlocks(tokens);
-        var questions = questionService.GetQuestions(blocks);
-        return questions.ToResponse();
+        var survey = questionService.GetSurvey(blocks);
+        return survey;
     }
 }

@@ -6,6 +6,7 @@ public class InputQuestion(string name) : Question(name)
 {
     public override QuestionType Type => QuestionType.InputQuestion;
     public List<InputBlock> Blocks { get; } = [];
+    public string? EnteredValue { get; set; } = null;
 
     public override QuestionView GetView()
     {
