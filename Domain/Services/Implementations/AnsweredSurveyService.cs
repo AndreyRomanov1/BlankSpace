@@ -11,7 +11,7 @@ public class AnsweredSurveyService(
     IFileStorageRepository fileStorageRepository,
     ITokenParsingService tokenParsingService,
     IBlocksService blocksService,
-    IQuestionService questionService)
+    IQuestionService questionService) : IAnsweredSurveyService
 {
     public Guid FillDocByAnsweredSurvey(Guid fileId, AnsweredSurvey answeredSurvey)
     {
@@ -21,12 +21,12 @@ public class AnsweredSurveyService(
         var blocks = blocksService.GroupTokensToBlocks(tokens);
         var survey = questionService.GetSurvey(blocks);
         MergeQuestionListWithAnsweredQuestionList(survey.Questions, answeredSurvey.AnsweredQuestions, true);
-        
 
+        // TODO Логику дописать!
         return fileId;
     }
 
-    public void MergeQuestionListWithAnsweredQuestionList(
+    private void MergeQuestionListWithAnsweredQuestionList(
         Question[] questions,
         AnsweredQuestionView[] answeredQuestionsViews,
         bool isActiveQuestions)
@@ -73,12 +73,10 @@ public class AnsweredSurveyService(
 
                     foreach (var (answerName, answer) in ifQuestion.Answers.Where(
                                  a => ifQuestion.SelectedAnswer != a.Value))
-                    {
                         MergeQuestionListWithAnsweredQuestionList(
                             answer.SubQuestions,
                             answeredQuestionView.SubQuestionByAnswer[answerName],
                             false);
-                    }
 
                     break;
                 }
@@ -86,11 +84,9 @@ public class AnsweredSurveyService(
                 {
                     var enteredValue = answeredQuestionView.QuestionAnswer;
                     if (!isActiveQuestions)
-                    {
                         if (enteredValue != null)
                             throw new BadRequestException(
                                 $"Если подвопрос {inputQuestion.Name} не выбран в родителе, то ответ должен быть null. Получено: <{enteredValue}>");
-                    }
 
                     inputQuestion.EnteredValue = enteredValue;
                     break;

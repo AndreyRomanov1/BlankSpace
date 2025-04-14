@@ -11,7 +11,7 @@ public static class SurveyExtensions
         return new Response.Survey(survey.Questions.Select(t => t.GetView().ToResponse()).ToArray());
     }
 
-    public static Response.Question ToResponse(this QuestionView questionView)
+    private static Response.Question ToResponse(this QuestionView questionView)
     {
         return new Response.Question(
             questionView.QuestionType.ToResponse(),
@@ -20,12 +20,39 @@ public static class SurveyExtensions
                 t => t.Value.Select(t => t.ToResponse()).ToArray()));
     }
 
-    public static Response.QuestionType ToResponse(this QuestionType questionType)
+    private static Response.QuestionType ToResponse(this QuestionType questionType)
     {
         return questionType switch
         {
             QuestionType.IfQuestion => Response.QuestionType.If,
             QuestionType.InputQuestion => Response.QuestionType.Input,
+            _ => throw new ArgumentOutOfRangeException(nameof(questionType), questionType, null)
+        };
+    }
+
+    public static AnsweredSurvey FromRequest(this Response.AnsweredSurvey answeredSurvey)
+    {
+        return new AnsweredSurvey(answeredSurvey.answeredQuestions.Select(t => t.FromRequest()).ToArray());
+    }
+
+    private static AnsweredQuestionView FromRequest(this Response.AnsweredQuestion answeredQuestion)
+    {
+        return new AnsweredQuestionView(
+            answeredQuestion.Name,
+            answeredQuestion.SubQuestionsByAnswer
+                .ToDictionary(
+                    t => t.Key,
+                    t => t.Value.Select(t2 => t2.FromRequest()).ToArray()),
+            answeredQuestion.questionType.FromRequest(),
+            answeredQuestion.QuestionAnswer);
+    }
+
+    private static QuestionType FromRequest(this Response.QuestionType questionType)
+    {
+        return questionType switch
+        {
+            Response.QuestionType.If => QuestionType.IfQuestion,
+            Response.QuestionType.Input => QuestionType.InputQuestion,
             _ => throw new ArgumentOutOfRangeException(nameof(questionType), questionType, null)
         };
     }

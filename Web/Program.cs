@@ -28,8 +28,6 @@ app.MapControllers();
 
 app.Run();
 
-return;
-
 // void MigrateIfNeed(WebApplication webApplication)
 // {
 //     using var scope = webApplication.Services.CreateScope();

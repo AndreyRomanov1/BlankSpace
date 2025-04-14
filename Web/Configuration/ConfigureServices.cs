@@ -19,6 +19,8 @@ public static class ConfigureServices
         serviceCollection.AddSingleton<ITokenParsingService, TokenParsingService>();
         serviceCollection.AddSingleton<IBlocksService, BlocksService>();
         serviceCollection.AddSingleton<IQuestionService, QuestionService>();
+        serviceCollection.AddSingleton<ISurveyService, SurveyService>();
+        serviceCollection.AddSingleton<IAnsweredSurveyService, AnsweredSurveyService>();
         return serviceCollection;
     }
 

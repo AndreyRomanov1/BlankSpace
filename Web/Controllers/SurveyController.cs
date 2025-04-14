@@ -8,7 +8,9 @@ namespace Web.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class SurveyController(ISurveyService surveyService) : ControllerBase
+public class SurveyController(
+    ISurveyService surveyService,
+    IAnsweredSurveyService answeredSurveyService) : ControllerBase
 {
     [HttpGet]
     public async Task<ActionResult<Response.Survey>> GetSurvey(Guid fileId)
@@ -30,5 +32,13 @@ public class SurveyController(ISurveyService surveyService) : ControllerBase
         {
             return StatusCode(500, "Error processing document");
         }
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Response.InsertSurveyAnswerToDocumentResult>> InsertSurveyAnswerToDocument(
+        Response.AnsweredSurvey answeredSurvey)
+    {
+        var fileId = answeredSurveyService.FillDocByAnsweredSurvey(answeredSurvey.fileId, answeredSurvey.FromRequest());
+        return new Response.InsertSurveyAnswerToDocumentResult(fileId);
     }
 }
