@@ -11,6 +11,7 @@ public class BlocksSandbox(ITestOutputHelper testOutputHelper)
     [InlineData("test_doc_2.docx")]
     [InlineData("test_doc_3.docx")]
     [InlineData("test_doc_4.docx")]
+    [InlineData("test_doc_5.docx")]
     public void GetBlocks(string filePath)
     {
         var tokenParsingService = GetTokenParsingService();

@@ -4,5 +4,5 @@ public record AnsweredQuestion(
     QuestionType questionType,
     string Name,
     Dictionary<string, AnsweredQuestion[]> SubQuestionsByAnswer,
-    string QuestionAnswer
+    string? QuestionAnswer
 );

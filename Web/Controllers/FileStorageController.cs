@@ -34,7 +34,7 @@ public class FileStorageController(IFileStorageRepository fileStorageRepository)
         try
         {
             var contentFile = fileStorageRepository.GetFile(fileId);
-
+            Console.WriteLine($"Длина файла: {contentFile.Stream.Length}");
             return File(contentFile.Stream, "application/octet-stream", contentFile.Name);
         }
         catch (NotFoundException)

@@ -1,5 +1,7 @@
 using Domain.Exceptions;
+using Domain.Objects.Blocks;
 using Domain.Objects.Questions;
+using Domain.Objects.Storage;
 using Domain.Objects.Survey;
 using Domain.Repositories.Interfaces;
 using Domain.Services.Interfaces;
@@ -24,51 +26,94 @@ public class AnsweredSurveyService(
 
         Fill(survey.Questions);
 
+        Console.WriteLine($"Документ в итоге: {doc.Paragraphs.Count} параграфов");
         var resultStream = new MemoryStream();
         doc.SaveAs(resultStream);
-        var resultContentFile = file with { Stream = resultStream };
+        Console.WriteLine($"Документ в итоге: {resultStream.Length} длина");
+
+        var resultContentFile = new ContentFile(file.Name, resultStream);
+        resultStream.Position = 0;
         var resultFileId =
             fileStorageRepository.AddFile(resultContentFile, TimeSpan.FromDays(12));
 
         return resultFileId;
     }
 
-    private void Fill(Question[] questions)
+    private static void Fill(Question[] questions)
     {
         foreach (var question in questions)
         {
-            Fill(question);
+            try
+            {
+                Fill(question);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Ошибка в обработке одного из вопросов: {e}");
+            }
         }
     }
 
-    private void Fill(Question question)
+    private static void Fill(Question question)
     {
         switch (question)
         {
             case IfQuestion ifQuestion:
             {
-                // TODO дописать логику
+                var selectedAnswer = ifQuestion.SelectedAnswer;
+                Console.WriteLine($"Обработка выбранного ответа {selectedAnswer!.Answer}");
+                foreach (var block in selectedAnswer!.Blocks)
+                {
+                    block.IfToken.ReplaceTokenValue("");
+                    block.EndIfToken.ReplaceTokenValue("");
+                }
+
+                Console.WriteLine($"Обработка не выбранных ответов");
+                foreach (var (answerName, answer) in ifQuestion.Answers
+                             .Where(t => t.Key != ifQuestion.SelectedAnswer!.Answer))
+                {
+                    Console.WriteLine($"Обработка не выбранного ответа: {answerName}");
+                    foreach (var block in answer!.Blocks)
+                    {
+                        var currentParagraph = block.IfToken.Paragraph;
+                        var startIndex = block.IfToken.StartIndex;
+                        Console.WriteLine("start counter");
+
+                        var counter = 0;
+                        while (currentParagraph != null && currentParagraph != block.EndIfToken.Paragraph)
+                        {
+                            Console.WriteLine(currentParagraph.Text + "  " + startIndex);
+                            currentParagraph.RemoveText(startIndex);
+                            Console.WriteLine(currentParagraph.Text);
+                            startIndex = 0;
+                            var next = currentParagraph.NextParagraph;
+                            if (currentParagraph.Text.Trim().Length == 0)
+                                currentParagraph.Remove(true);
+                            currentParagraph = next;
+                            counter++;
+                            Console.WriteLine(counter);
+                        }
+
+                        Console.WriteLine("end counter");
+                        currentParagraph?.RemoveText(startIndex, block.EndIfToken.EndIndex - startIndex + 1);
+                    }
+                    Console.WriteLine($"Конец обработки не выбранного ответа: {answerName}");
+
+                }
+
+                Console.WriteLine($"Заполняем подвопросы для {selectedAnswer.Answer}. Их {selectedAnswer.SubQuestions.Length} штук");
+                Fill(selectedAnswer.SubQuestions);
+                Console.WriteLine($"Конец подвопросов для {selectedAnswer.Answer}");
                 break;
             }
             case InputQuestion inputQuestion:
             {
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine(inputQuestion.Name);
-                Console.WriteLine();
+                Console.WriteLine($"Поле ввода {inputQuestion.Name}: {inputQuestion.EnteredValue}");
                 foreach (var block in inputQuestion.Blocks)
                 {
-                    var inputToken = block.InputToken;
-                    Console.WriteLine(inputToken.Paragraph.Text);
-                    Console.WriteLine(inputToken.Paragraph.Text.Substring(
-                        inputToken.StartIndex,
-                        inputToken.EndIndex - inputToken.StartIndex));
-                    block.InputToken.Paragraph.RemoveText(
-                        inputToken.StartIndex,
-                        inputToken.EndIndex - inputToken.StartIndex);
-                    block.InputToken.Paragraph.InsertText(inputQuestion.EnteredValue);
-                    Console.WriteLine(inputToken.Paragraph.Text);
-                    Console.WriteLine();
+                    Console.WriteLine(block.InputToken.Paragraph.PreviousParagraph?.Text);
+                    Console.WriteLine(block.InputToken.Paragraph.Text);
+                    block.InputToken.ReplaceTokenValue(inputQuestion.EnteredValue!);
                 }
 
                 break;

@@ -38,7 +38,9 @@ public class SurveyController(
     public async Task<ActionResult<Response.InsertSurveyAnswerToDocumentResult>> InsertSurveyAnswerToDocument(
         Response.AnsweredSurvey answeredSurvey)
     {
+        Console.WriteLine("\n\n\n--------------------------------------");
         var fileId = answeredSurveyService.FillDocByAnsweredSurvey(answeredSurvey.fileId, answeredSurvey.FromRequest());
+        Console.WriteLine("\n\n\n--------------------------------------");
         return new Response.InsertSurveyAnswerToDocumentResult(fileId);
     }
 }
