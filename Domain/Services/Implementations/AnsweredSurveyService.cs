@@ -22,8 +22,60 @@ public class AnsweredSurveyService(
         var survey = questionService.GetSurvey(blocks);
         MergeQuestionListWithAnsweredQuestionList(survey.Questions, answeredSurvey.AnsweredQuestions, true);
 
-        // TODO Логику дописать!
-        return fileId;
+        Fill(survey.Questions);
+
+        var resultStream = new MemoryStream();
+        doc.SaveAs(resultStream);
+        var resultContentFile = file with { Stream = resultStream };
+        var resultFileId =
+            fileStorageRepository.AddFile(resultContentFile, TimeSpan.FromDays(12));
+
+        return resultFileId;
+    }
+
+    private void Fill(Question[] questions)
+    {
+        foreach (var question in questions)
+        {
+            Fill(question);
+        }
+    }
+
+    private void Fill(Question question)
+    {
+        switch (question)
+        {
+            case IfQuestion ifQuestion:
+            {
+                // TODO дописать логику
+                break;
+            }
+            case InputQuestion inputQuestion:
+            {
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine(inputQuestion.Name);
+                Console.WriteLine();
+                foreach (var block in inputQuestion.Blocks)
+                {
+                    var inputToken = block.InputToken;
+                    Console.WriteLine(inputToken.Paragraph.Text);
+                    Console.WriteLine(inputToken.Paragraph.Text.Substring(
+                        inputToken.StartIndex,
+                        inputToken.EndIndex - inputToken.StartIndex));
+                    block.InputToken.Paragraph.RemoveText(
+                        inputToken.StartIndex,
+                        inputToken.EndIndex - inputToken.StartIndex);
+                    block.InputToken.Paragraph.InsertText(inputQuestion.EnteredValue);
+                    Console.WriteLine(inputToken.Paragraph.Text);
+                    Console.WriteLine();
+                }
+
+                break;
+            }
+            default:
+                throw new BadRequestException("Такой тип вопроса не поддерживается");
+        }
     }
 
     private void MergeQuestionListWithAnsweredQuestionList(
@@ -64,6 +116,7 @@ public class AnsweredSurveyService(
                         if (!ifQuestion.Answers.TryGetValue(selectedAnswer, out var answer))
                             throw new BadRequestException(
                                 $"Нет такого варианта ответа ответа на вопрос <{ifQuestion.Name}>. Получено: <{selectedAnswer}>");
+                        ifQuestion.ActiveQuestion = true;
                         ifQuestion.SelectedAnswer = answer;
                         MergeQuestionListWithAnsweredQuestionList(
                             answer.SubQuestions,
@@ -84,11 +137,17 @@ public class AnsweredSurveyService(
                 {
                     var enteredValue = answeredQuestionView.QuestionAnswer;
                     if (!isActiveQuestions)
+                    {
                         if (enteredValue != null)
                             throw new BadRequestException(
                                 $"Если подвопрос {inputQuestion.Name} не выбран в родителе, то ответ должен быть null. Получено: <{enteredValue}>");
+                    }
+                    else
+                    {
+                        inputQuestion.ActiveQuestion = true;
+                        inputQuestion.EnteredValue = enteredValue;
+                    }
 
-                    inputQuestion.EnteredValue = enteredValue;
                     break;
                 }
                 default:
