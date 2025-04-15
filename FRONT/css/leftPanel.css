@@ -1,0 +1,65 @@
+#left-panel {
+  width: 200px;
+  background-color: #f7f7f7;
+  border-right: 1px solid #ddd;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  overflow-y: auto;
+  padding-top: 60px;
+}
+.left-panel-header {
+  padding: 15px;
+  font-size: 20px;
+  font-family: Inter, sans-serif;
+  font-weight: bold;
+  border-bottom: 1px solid #ddd;
+}
+.survey-item {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.survey-item span {
+  width: 100%;
+  text-align: start;
+  margin: 4% 0;
+}
+
+.survey-item:hover {
+  background-color: #eaeaea;
+}
+.survey-item.active {
+  background-color: #d0ebff;
+}
+
+.survey-actions {
+  display: flex;
+  justify-content: space-between;
+}
+
+.survey-actions button {
+  margin-left: 5px;
+  font-size: 14px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.survey-actions .edit-btn {
+  background-color: #1ac14c;
+  color: white;
+}
+.survey-actions .done-btn {
+  background-color: #2655a6;
+  color: white;
+}
+.survey-actions .done-btn:hover {
+  background-color: #367bf3;
+}

@@ -1,0 +1,49 @@
+.header {
+  background-color: rgba(164, 172, 206);
+  height: 60px;
+  padding-top: 5px;
+  position: fixed;
+  top: 0;
+  left: 200px;
+  width: calc(100% - 200px);
+  z-index: 1000;
+}
+.header__container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 15px 0 20px;
+}
+.nameFile {
+  color: white;
+  font-size: 30px;
+  font-family: Inter, sans-serif;
+  margin-right: auto;
+}
+.upload,
+.done {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  font-size: 40px;
+  font-family: Inter, sans-serif;
+  background-color: #1ac14c;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  box-shadow: #515151 1px 2px 3px;
+}
+.upload:hover,
+.done:hover {
+  background-color: #00dd09;
+}
+.upload:active,
+.done:active {
+  background-color: #00dd09;
+}

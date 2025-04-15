@@ -1,0 +1,141 @@
+body {
+  background-image: url("../images/background_image.png");
+  margin: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  font-family: Inter, sans-serif;
+}
+#survey-container {
+  margin: 80px 15px 15px 200px;
+  padding-top: 5px;
+}/* оставляем место для фиксированного хедера */
+.question-block {
+  display: flex;
+  flex-direction: column;
+  width: 70%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 15px;
+  padding: 20px;
+  margin: 20px auto 0 auto;
+  color: white;
+}
+.question-block h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+  color: #fff;
+  font-weight: 600;
+}
+
+.subquestion-outer-container .question-block {
+  background-color: transparent;
+  width: 100%;
+  margin-top: 0;
+  padding: 10px;
+}
+
+.answer-container {
+  margin-bottom: 10px;
+}
+.answer-option {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.answer-option input[type="radio"] {
+  margin-right: 8px;
+  cursor: pointer;
+  width: 16px;
+  height: 16px;
+}
+.answer-option label {
+  font-size: 16px;
+  color: #fff;
+  cursor: pointer;
+}
+.answer-input {
+  padding: 10px 12px;
+  background: #fdfdfd;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+.answer-input:focus {
+  border-color: #000;
+  outline: none;
+}
+.subquestion-container {
+  padding-bottom: 10px;
+}
+hr.subquestion-separator {
+  border: none;
+  border-top: 5px solid #fff;
+  margin: 15px 0;
+  border-radius: 3px;
+}
+#submitBtn {
+  margin: 30px auto;
+  padding: 12px 30px;
+  background: #1ac14c;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s;
+  display: block;
+}
+#submitBtn:hover {
+  background: #00dd09;
+}
+#submitBtn:active {
+  background: #388e3c;
+}
+#contractOutput {
+  position: relative;
+  white-space: pre-wrap;
+  margin: 30px;
+  padding: 20px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  line-height: 1.6;
+  font-family: Consolas, monospace;
+  max-height: 400px;
+  overflow-y: auto;
+  left: 200px;
+  width: calc(100% - 220px);
+}
+
+::-webkit-scrollbar {
+  width: 20px;
+  background: #A4ACCE;
+  background: linear-gradient(180deg,rgba(164, 172, 206, 1) 0%, rgba(0, 59, 172, 1) 100%);
+  position: absolute;
+  top: 10px;
+}
+
+/* Дорожка скроллбара (фон) */
+::-webkit-scrollbar-track {
+  background: rgba(164, 172, 206);
+  border-radius: 10px;
+}
+
+/* Ползунок скроллбара */
+::-webkit-scrollbar-thumb {
+  background: white;
+  border-radius: 10px;
+}
+
+input[type="radio"] {
+  accent-color: #3D69B8;
+}
+
