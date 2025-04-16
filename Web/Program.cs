@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Web.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,8 +8,8 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAll", policy =>
     {
         policy.AllowAnyOrigin()
-              .AllowAnyMethod()
-              .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -24,7 +25,13 @@ builder.Services.ConfigureWebServices();
 
 
 var app = builder.Build();
-
+Console.WriteLine(Path.Combine(Directory.GetCurrentDirectory(), "..", "FRONT"));
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), "..", "FRONT")),
+    RequestPath = ""
+});
 // MigrateIfNeed(app);
 
 if (app.Environment.IsDevelopment())
