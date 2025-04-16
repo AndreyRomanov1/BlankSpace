@@ -30,13 +30,13 @@ jobs:
 
       - name: Publish Backend
         run: |
-          dotnet publish Web/Web.csproj \
-            -c Release \
-            -r ${{ matrix.runtime }} \
-            --self-contained true \
-            -p:PublishSingleFile=true \
-            -p:DebugType=None \
-            -p:DebugSymbols=false \
+          dotnet publish Web/Web.csproj `
+            -c Release `
+            -r ${{ matrix.runtime }} `
+            --self-contained true `
+            -p:PublishSingleFile=true `
+            -p:DebugType=None `
+            -p:DebugSymbols=false `
             -o publish/${{ matrix.runtime }}
 
       - name: Prepare FRONT
@@ -48,21 +48,19 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             echo '#!/bin/bash
-            cd publish/${{ matrix.runtime }}
             ./Web &
-            sleep 5  # Увеличим задержку для инициализации
-            xdg-open http://localhost:5000/index.html' > start.sh
-            chmod +x start.sh
+            sleep 5
+            xdg-open http://localhost:5000/index.html' > publish/${{ matrix.runtime }}/start.sh
+            chmod +x publish/${{ matrix.runtime }}/start.sh
           else
             echo '@echo off
-            cd publish\${{ matrix.runtime }}
             start "" "Web.exe"
             timeout /t 5 >nul
             start "" http://localhost:5000/index.html
-            exit' > start.bat
+            exit' > publish/${{ matrix.runtime }}/start.bat
           fi
 
-      - name: Fix Linux Permissions
+      - name: Fix Permissions
         if: matrix.os == 'ubuntu-latest'
         run: chmod +x publish/${{ matrix.runtime }}/Web
 
@@ -70,6 +68,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Executable-${{ matrix.runtime }}
-          path: |
-            publish/${{ matrix.runtime }}/*
-            start.*
+          path: publish/${{ matrix.runtime }}
