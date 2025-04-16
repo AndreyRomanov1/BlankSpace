@@ -8,13 +8,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
-        runtime: [win-x64, linux-x64]
+        os: [ windows-latest, ubuntu-latest ]
+        runtime: [ win-x64, linux-x64 ]
         exclude:
           - os: windows-latest
             runtime: linux-x64
           - os: ubuntu-latest
             runtime: win-x64
+      fail-fast: false
 
     runs-on: ${{ matrix.os }}
 
@@ -38,7 +39,7 @@ jobs:
           fi
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: app-${{ matrix.runtime }}
           path: artifacts/
