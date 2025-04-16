@@ -29,7 +29,7 @@ Console.WriteLine(Path.Combine(Directory.GetCurrentDirectory(), "..", "FRONT"));
 app.UseStaticFiles(new StaticFileOptions
 {
     FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "..", "FRONT")),
+        Path.Combine(Directory.GetCurrentDirectory(), "FRONT")),
     RequestPath = ""
 });
 // MigrateIfNeed(app);
