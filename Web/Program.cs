@@ -25,13 +25,7 @@ builder.Services.ConfigureWebServices();
 
 
 var app = builder.Build();
-Console.WriteLine(Path.Combine(Directory.GetCurrentDirectory(), "..", "FRONT"));
-app.UseStaticFiles(new StaticFileOptions
-{
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(Directory.GetCurrentDirectory(), "FRONT")),
-    RequestPath = ""
-});
+app.UseStaticFiles();
 // MigrateIfNeed(app);
 
 if (app.Environment.IsDevelopment())

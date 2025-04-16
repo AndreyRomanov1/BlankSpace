@@ -40,12 +40,6 @@ jobs:
             -p:DebugSymbols=false \
             -o publish/${{ matrix.runtime }}
 
-      - name: Prepare FRONT
-        shell: bash
-        run: |
-          mkdir -p publish/${{ matrix.runtime }}/FRONT
-          cp -r FRONT/* publish/${{ matrix.runtime }}/FRONT/
-
       - name: Create Linux Startup Script
         if: matrix.os == 'ubuntu-latest'
         shell: bash
