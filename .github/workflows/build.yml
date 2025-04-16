@@ -16,6 +16,8 @@ jobs:
           - os: windows-latest
             runtime: win-x64
             script-ext: bat
+      fail-fast: false
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -27,7 +29,15 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Publish Backend
-        run: dotnet publish Web/Web.csproj -c Release -r ${{ matrix.runtime }} --self-contained true -p:PublishSingleFile=true -o publish/${{ matrix.runtime }}
+        run: |
+          dotnet publish Web/Web.csproj \
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o publish/${{ matrix.runtime }}
 
       - name: Prepare FRONT
         run: |
@@ -38,20 +48,28 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             echo '#!/bin/bash
+            cd publish/${{ matrix.runtime }}
             ./Web &
-            sleep 2
-            xdg-open http://localhost:5000/index.html' > publish/${{ matrix.runtime }}/start.sh
-            chmod +x publish/${{ matrix.runtime }}/start.sh
+            sleep 5  # Увеличим задержку для инициализации
+            xdg-open http://localhost:5000/index.html' > start.sh
+            chmod +x start.sh
           else
             echo '@echo off
-            start "" "%~dp0Web.exe"
-            timeout /t 2 >nul
+            cd publish\${{ matrix.runtime }}
+            start "" "Web.exe"
+            timeout /t 5 >nul
             start "" http://localhost:5000/index.html
-            exit' > publish/${{ matrix.runtime }}/start.bat
+            exit' > start.bat
           fi
 
+      - name: Fix Linux Permissions
+        if: matrix.os == 'ubuntu-latest'
+        run: chmod +x publish/${{ matrix.runtime }}/Web
+
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Executable-${{ matrix.runtime }}
-          path: publish/${{ matrix.runtime }}
+          path: |
+            publish/${{ matrix.runtime }}/*
+            start.*
