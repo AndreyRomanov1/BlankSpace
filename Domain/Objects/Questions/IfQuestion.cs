@@ -24,6 +24,6 @@ public class IfQuestion(string name) : Question(name)
 public class IfAnswer(string answer)
 {
     public string Answer { get; } = answer;
-    public Question[] SubQuestions { get; set; }
+    public Question[] SubQuestions { get; set; } = null!;
     public List<IfBlock> Blocks { get; } = [];
 }

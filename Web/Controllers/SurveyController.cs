@@ -13,34 +13,34 @@ public class SurveyController(
     IAnsweredSurveyService answeredSurveyService) : ControllerBase
 {
     [HttpGet]
-    public async Task<ActionResult<Response.Survey>> GetSurvey(Guid fileId)
+    public Task<ActionResult<Response.Survey>> GetSurvey(Guid fileId)
     {
         try
         {
             var survey = surveyService.GetSurveyByDocx(fileId);
-            return survey.ToResponse();
+            return Task.FromResult<ActionResult<Response.Survey>>(survey.ToResponse());
         }
         catch (NotFoundException ex)
         {
-            return StatusCode(404, ex.Message);
+            return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(404, ex.Message));
         }
         catch (ArgumentException ex)
         {
-            return StatusCode(400, ex.Message);
+            return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(400, ex.Message));
         }
         catch
         {
-            return StatusCode(500, "Error processing document");
+            return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(500, "Error processing document"));
         }
     }
 
     [HttpPost]
-    public async Task<ActionResult<Response.InsertSurveyAnswerToDocumentResult>> InsertSurveyAnswerToDocument(
+    public Task<ActionResult<Response.InsertSurveyAnswerToDocumentResult>> InsertSurveyAnswerToDocument(
         Response.AnsweredSurvey answeredSurvey)
     {
         Console.WriteLine("\n\n\n--------------------------------------");
         var fileId = answeredSurveyService.FillDocByAnsweredSurvey(answeredSurvey.fileId, answeredSurvey.FromRequest());
         Console.WriteLine("\n\n\n--------------------------------------");
-        return new Response.InsertSurveyAnswerToDocumentResult(fileId);
+        return Task.FromResult<ActionResult<Response.InsertSurveyAnswerToDocumentResult>>(new Response.InsertSurveyAnswerToDocumentResult(fileId));
     }
 }
