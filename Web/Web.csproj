@@ -25,10 +25,4 @@
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
-
-    <PropertyGroup>
-        <PublishSingleFile>true</PublishSingleFile>
-        <SelfContained>true</SelfContained>
-        <RuntimeIdentifier>win-x64;linux-x64</RuntimeIdentifier>
-    </PropertyGroup>
 </Project>

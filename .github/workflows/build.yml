@@ -1,4 +1,4 @@
-name: Build and Publish
+name: Build Executables
 
 on:
   push:
@@ -8,13 +8,14 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ windows-latest, ubuntu-latest ]
-        runtime: [ win-x64, linux-x64 ]
-        exclude:
-          - os: windows-latest
-            runtime: linux-x64
+        os: [ubuntu-latest, windows-latest]
+        include:
           - os: ubuntu-latest
+            runtime: linux-x64
+            script-name: start.sh
+          - os: windows-latest
             runtime: win-x64
+            script-name: start.bat
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -27,19 +28,49 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Publish
-        run: dotnet publish Web/Web.csproj -c Release -r ${{ matrix.runtime }} -p:PublishSingleFile=true --self-contained true -o artifacts
-
-      - name: Add scripts
+      - name: Publish Backend
         shell: bash
         run: |
-          cp FRONT/* artifacts/
-          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            chmod +x artifacts/run.sh
-          fi
+          dotnet publish Web/Web.csproj \
+            -c Release \
+            -r ${{ matrix.runtime }} \
+            --self-contained true \
+            -p:PublishSingleFile=true \
+            -p:DebugType=None \
+            -p:DebugSymbols=false \
+            -o publish/${{ matrix.runtime }}
 
-      - name: Upload artifact
+      - name: Prepare FRONT
+        shell: bash
+        run: |
+          mkdir -p publish/${{ matrix.runtime }}/FRONT
+          cp -r FRONT/* publish/${{ matrix.runtime }}/FRONT/
+
+      - name: Create Linux Startup Script
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: |
+          echo '#!/bin/bash
+          ./Web &
+          sleep 5
+          xdg-open http://localhost:5000/index.html' > publish/${{ matrix.runtime }}/start.sh
+          chmod +x publish/${{ matrix.runtime }}/start.sh
+          chmod +x publish/${{ matrix.runtime }}/Web
+
+      - name: Create Windows Startup Script
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          @'
+          @echo off
+          start "" "Web.exe"
+          timeout /t 5 >nul
+          start "" http://localhost:5000/index.html
+          exit
+          '@ | Out-File -FilePath publish/${{ matrix.runtime }}/start.bat -Encoding ASCII
+
+      - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-${{ matrix.runtime }}
-          path: artifacts/
+          name: Executable-${{ matrix.runtime }}
+          path: publish/${{ matrix.runtime }}
