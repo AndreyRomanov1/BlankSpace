@@ -19,10 +19,6 @@ function renderSurvey(survey) {
     finalizeCurrentSurvey();
   });
   container.appendChild(submitBtn);
-
-  const contractOutput = document.createElement("pre");
-  contractOutput.id = "contractOutput";
-  container.appendChild(contractOutput);
 }
 
 function renderQuestions(questions, container, survey, level, prefix) {
