@@ -25,13 +25,21 @@ builder.Services.ConfigureWebServices();
 
 
 var app = builder.Build();
-app.UseStaticFiles();
-// MigrateIfNeed(app);
-
 if (app.Environment.IsDevelopment())
 {
+    Console.WriteLine(Path.Combine(builder.Environment.ContentRootPath, "../FRONT"));
+    var frontPath = Path.Combine(builder.Environment.ContentRootPath, "../FRONT");
+    app.UseStaticFiles(new StaticFileOptions
+    {
+        FileProvider = new PhysicalFileProvider(frontPath),
+        RequestPath = ""
+    });
     app.UseSwagger();
     app.UseSwaggerUI();
+}
+else
+{
+    app.UseStaticFiles();
 }
 
 app.UseHttpsRedirection();
@@ -39,22 +47,3 @@ app.MapControllers();
 app.UseCors("AllowAll");
 
 app.Run();
-
-return;
-
-// void MigrateIfNeed(WebApplication webApplication)
-// {
-//     using var scope = webApplication.Services.CreateScope();
-//     var services = scope.ServiceProvider;
-//     try
-//     {
-//         // TODO Добавить DbContext
-//         //var context = services.GetRequiredService<DbContext>();
-//         //context.Database.Migrate();
-//         Console.WriteLine("Миграция: Успешна применена");
-//     }
-//     catch (Exception ex)
-//     {
-//         Console.WriteLine($"Миграция: Ошибка применения миграции: {ex.Message}");
-//     }
-// }

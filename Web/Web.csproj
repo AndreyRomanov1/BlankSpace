@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="../FRONT/**" LinkBase="wwwroot">
+        <Content Include="../FRONT/**" LinkBase="wwwroot" Condition="'$(Configuration)' != 'Debug'">
             <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
