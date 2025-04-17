@@ -1,7 +1,10 @@
 function loadLeftPanel() {
   const leftPanel = document.getElementById("left-panel");
   leftPanel.innerHTML = `
-      <div class="left-panel-header">Опросы</div>
+      <div class = "left-panel-header">
+        <div class="text-opros">Сессии:</div>
+        <button class="upload">+</button>
+      </div>
       <div id="survey-list"></div>
     `;
   const surveyList = document.getElementById("survey-list");

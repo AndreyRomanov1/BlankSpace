@@ -80,24 +80,24 @@ hr.subquestion-separator {
   margin: 15px 0;
   border-radius: 3px;
 }
-#submitBtn {
-  margin: 30px auto;
-  padding: 12px 30px;
-  background: #1ac14c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s;
-  display: block;
-}
-#submitBtn:hover {
-  background: #00dd09;
-}
-#submitBtn:active {
-  background: #388e3c;
-}
+/*#submitBtn {*/
+/*  margin: 30px auto;*/
+/*  padding: 12px 30px;*/
+/*  background: #1ac14c;*/
+/*  color: white;*/
+/*  border: none;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  font-size: 16px;*/
+/*  transition: background 0.3s;*/
+/*  display: block;*/
+/*}*/
+/*#submitBtn:hover {*/
+/*  background: #00dd09;*/
+/*}*/
+/*#submitBtn:active {*/
+/*  background: #388e3c;*/
+/*}*/
 #contractOutput {
   position: relative;
   white-space: pre-wrap;
