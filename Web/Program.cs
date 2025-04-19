@@ -34,10 +34,13 @@ builder.Services.ConfigureWebServices();
 
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+
 if (app.Environment.IsDevelopment())
 {
-    Console.WriteLine(Path.Combine(builder.Environment.ContentRootPath, "../FRONT"));
     var frontPath = Path.Combine(builder.Environment.ContentRootPath, "../FRONT");
+    logger.LogInformation("Путь до фронта: {}", frontPath);
     app.UseStaticFiles(new StaticFileOptions
     {
         FileProvider = new PhysicalFileProvider(frontPath),
@@ -53,7 +56,6 @@ else
 
 app.MapControllers();
 app.UseCors("AllowAll");
-
 app.Lifetime.ApplicationStarted.Register(() =>
 {
     try
@@ -62,7 +64,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"Не удалось открыть браузер: {ex.Message}");
+        logger.LogError("Не удалось открыть браузер: {}", ex.Message);
     }
 });
 
