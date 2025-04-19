@@ -3,6 +3,13 @@ let currentSurveyId = null;
 let currentSurveyName = "";
 var surveyData = null;
 var FILE = null;
+var baseApiUrl;
+fetch("config.json")
+  .then((r) => r.json())
+  .then((r) => {
+    baseApiUrl = r.apiUrl;
+  });
+
 localStorage.setItem("surveys", JSON.stringify(SURVEYS));
 
 function loadSurveysFromStorage() {

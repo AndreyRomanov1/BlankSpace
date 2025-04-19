@@ -244,9 +244,8 @@ async function finalizeCurrentSurvey() {
 
   console.log(GUID);
 
-  const readableStream = (
-    await fetch(`http://localhost:5159/api/FileStorage/${GUID}`)
-  ).body;
+  const readableStream = (await fetch(`${baseApiUrl}/FileStorage/${GUID}`))
+    .body;
 
   const file = URL.createObjectURL(await new Response(readableStream).blob());
 
@@ -262,7 +261,7 @@ async function submitSurvey(frontendResults, fileId) {
   const backendData = createSurveyResult(frontendResults, fileId);
 
   try {
-    const response = await fetch("http://localhost:5159/api/Survey", {
+    const response = await fetch(`${baseApiUrl}/Survey`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

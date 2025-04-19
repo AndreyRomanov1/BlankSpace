@@ -7,6 +7,12 @@ function loadLeftPanel() {
       </div>
       <div id="survey-list"></div>
     `;
+  const uploadBtn = document.querySelector(".upload");
+  if (uploadBtn) {
+    uploadBtn.addEventListener("click", () => {
+      openModal();
+    });
+  }
   const surveyList = document.getElementById("survey-list");
   SURVEYS.forEach((survey) => {
     const item = document.createElement("div");

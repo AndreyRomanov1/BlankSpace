@@ -120,13 +120,10 @@ async function uploadFile(file) {
   formData.append("formFile", file);
 
   try {
-    const uploadResponse = await fetch(
-      "http://localhost:5159/api/FileStorage",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const uploadResponse = await fetch(`${baseApiUrl}/FileStorage`, {
+      method: "POST",
+      body: formData,
+    });
 
     if (!uploadResponse.ok) {
       const errorText = await uploadResponse.text();
@@ -139,7 +136,7 @@ async function uploadFile(file) {
     fileId = fileId.replace(/"/g, "").replace(/'/g, "");
 
     const surveyResponse = await fetch(
-      `http://localhost:5159/api/Survey?fileId=${fileId}`,
+      `${baseApiUrl}/Survey?fileId=${fileId}`,
       {
         headers: {
           Accept: "application/json",
