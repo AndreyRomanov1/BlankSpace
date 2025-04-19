@@ -1,7 +1,16 @@
+using System.Diagnostics;
+using System.Net;
 using Microsoft.Extensions.FileProviders;
 using Web.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+const int port = 5000;
+var httpLocalhost = $"http://localhost:{port}";
+const string mainPage = "/index.html";
+builder.WebHost
+    .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Loopback, port))
+    .UseUrls(httpLocalhost);
 
 builder.Services.AddCors(options =>
 {
@@ -25,10 +34,13 @@ builder.Services.ConfigureWebServices();
 
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+
 if (app.Environment.IsDevelopment())
 {
-    Console.WriteLine(Path.Combine(builder.Environment.ContentRootPath, "../FRONT"));
     var frontPath = Path.Combine(builder.Environment.ContentRootPath, "../FRONT");
+    logger.LogInformation("Путь до фронта: {}", frontPath);
     app.UseStaticFiles(new StaticFileOptions
     {
         FileProvider = new PhysicalFileProvider(frontPath),
@@ -42,8 +54,18 @@ else
     app.UseStaticFiles();
 }
 
-app.UseHttpsRedirection();
 app.MapControllers();
 app.UseCors("AllowAll");
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    try
+    {
+        Process.Start(new ProcessStartInfo(httpLocalhost + mainPage) { UseShellExecute = true });
+    }
+    catch (Exception ex)
+    {
+        logger.LogError("Не удалось открыть браузер: {}", ex.Message);
+    }
+});
 
 app.Run();
