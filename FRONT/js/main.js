@@ -262,7 +262,7 @@ async function submitSurvey(frontendResults, fileId) {
   const backendData = createSurveyResult(frontendResults, fileId);
 
   try {
-    const response = await fetch("http://localhost:5000/api/Survey", {
+    const response = await fetch(`${baseApiUrl}/Survey`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
