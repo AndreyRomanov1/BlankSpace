@@ -1,7 +1,16 @@
+using System.Diagnostics;
+using System.Net;
 using Microsoft.Extensions.FileProviders;
 using Web.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+const int port = 5000;
+var httpLocalhost = $"http://localhost:{port}";
+const string mainPage = "/index.html";
+builder.WebHost
+    .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Loopback, port))
+    .UseUrls(httpLocalhost);
 
 builder.Services.AddCors(options =>
 {
@@ -42,8 +51,19 @@ else
     app.UseStaticFiles();
 }
 
-app.UseHttpsRedirection();
 app.MapControllers();
 app.UseCors("AllowAll");
+
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    try
+    {
+        Process.Start(new ProcessStartInfo(httpLocalhost + mainPage) { UseShellExecute = true });
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Не удалось открыть браузер: {ex.Message}");
+    }
+});
 
 app.Run();
