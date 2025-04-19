@@ -14,18 +14,11 @@ function loadLeftPanel() {
     item.dataset.surveyId = survey.id;
     item.innerHTML = `
         <span>${survey.name || "Новый опрос"}</span>
-        <div class="survey-actions">
-          <button class="edit-btn">Редактировать</button>
-          <button class="done-btn">Готово</button>
-        </div>
       `;
-    item.querySelector(".edit-btn").addEventListener("click", () => {
+    item.addEventListener("click", () => {
       currentSurveyName = survey.name;
       changeSurveyHeaderName();
       loadSurvey(survey.id);
-    });
-    item.querySelector(".done-btn").addEventListener("click", () => {
-      finalizeSurvey(survey.id);
     });
     surveyList.appendChild(item);
   });

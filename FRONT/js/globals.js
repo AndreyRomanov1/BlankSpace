@@ -1,6 +1,8 @@
 let SURVEYS = [];
 let currentSurveyId = null;
 let currentSurveyName = "";
+var surveyData = null;
+var FILE = null;
 localStorage.setItem("surveys", JSON.stringify(SURVEYS));
 
 function loadSurveysFromStorage() {

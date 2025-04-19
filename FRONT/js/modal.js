@@ -54,18 +54,64 @@ function initModalEvents() {
   const createBtn = document.querySelector(".create-btn");
   createBtn.addEventListener("click", () => {
     if (window.uploadedFile) {
-      uploadFile(window.uploadedFile);
+      showSurvey();
     } else {
       alert("Выберите файл для загрузки");
     }
   });
+
+  const resetBtn = document.querySelector(".reset-btn");
+  resetBtn.addEventListener("click", () => {
+    updateModal("reset");
+  });
+}
+
+function showSurvey() {
+  const newSurvey = {
+    id: "survey-" + Date.now(),
+    fileId: currentSurveyId,
+    name: currentSurveyName,
+    json: surveyData,
+    answers: {},
+    originalFile: FILE,
+  };
+  SURVEYS.push(newSurvey);
+  saveSurveysToStorage();
+
+  loadLeftPanel();
+  loadSurvey(newSurvey.id);
+  changeSurveyHeaderName();
+  closeModal();
+}
+
+function updateModal(type, error = null) {
+  const dropZone = document.querySelector("#dropZone");
+  const modalInfo = document.querySelector(".info");
+  const docTitle = document.querySelector(".info__title-doc");
+  const status = document.querySelector(".info__status");
+  if (type === "reset") {
+    dropZone.style.display = "block";
+    modalInfo.style.display = "none";
+    currentSurveyId = null;
+    currentSurveyName = "";
+    surveyData = null;
+    FILE = null;
+
+    const fileInput = document.getElementById("fileInput");
+    fileInput.value = "";
+  } else {
+    dropZone.style.display = "none";
+    modalInfo.style.display = "flex";
+    docTitle.textContent = currentSurveyName;
+    status.textContent = error ? "Ошибка" : "Корректно";
+  }
 }
 
 function handleFiles(files) {
   const file = files[0];
   if (file) {
     window.uploadedFile = file;
-    alert(`Файл "${file.name}" успешно выбран!`);
+    uploadFile(file);
   }
 }
 
@@ -102,29 +148,17 @@ async function uploadFile(file) {
     );
 
     if (!surveyResponse.ok) {
-      throw new Error(`Failed to get survey: ${surveyResponse.statusText}`);
+      updateModal("init", `Failed to get survey: ${surveyResponse.statusText}`);
+      return;
+      // throw new Error(`Failed to get survey: ${surveyResponse.statusText}`);
     }
 
-    const surveyData = await surveyResponse.json();
+    surveyData = await surveyResponse.json();
+    currentSurveyId = fileId;
+    currentSurveyName = file.name;
+    FILE = file;
 
-    const newSurvey = {
-      id: "survey-" + Date.now(),
-      fileId: fileId,
-      name: file.name,
-      json: surveyData,
-      answers: {},
-      originalFile: file,
-    };
-
-    SURVEYS.push(newSurvey);
-    saveSurveysToStorage();
-
-    loadLeftPanel();
-    loadSurvey(newSurvey.id);
-    currentSurveyName = newSurvey.name;
-    changeSurveyHeaderName();
-
-    closeModal();
+    updateModal("init");
   } catch (error) {
     console.error("Upload error:", error);
     alert(`Ошибка загрузки: ${error.message}`);
