@@ -238,7 +238,7 @@ async function finalizeCurrentSurvey() {
     return;
   }
 
-  alert("Ответы в выводе на консоль");
+  // alert("Ответы в выводе на консоль");
 
   const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
 
