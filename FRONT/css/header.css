@@ -4,8 +4,8 @@
   padding-top: 5px;
   position: fixed;
   top: 0;
-  left: 200px;
-  width: calc(100% - 200px);
+  left: 300px;
+  width: calc(100% - 300px);
   z-index: 1000;
 }
 .header__container {
@@ -22,12 +22,12 @@
   font-family: Inter, sans-serif;
   margin-right: auto;
 }
-.upload,
+
 .done {
   cursor: pointer;
-  width: 50px;
+  width: 120px;
   height: 50px;
-  font-size: 40px;
+  font-size: 20px;
   font-family: Inter, sans-serif;
   background-color: #1ac14c;
   color: white;
@@ -39,11 +39,9 @@
   transition: background-color 0.3s;
   box-shadow: #515151 1px 2px 3px;
 }
-.upload:hover,
+
+.done:active,
 .done:hover {
   background-color: #00dd09;
 }
-.upload:active,
-.done:active {
-  background-color: #00dd09;
-}
+

@@ -56,17 +56,77 @@
   font-size: 24px;
   text-align: center;
 }
-.create-btn {
+.modal__btn {
   width: 100%;
   padding: 10px;
   font-size: 20px;
   font-family: Inter, sans-serif;
-  background-color: #1ac14c;
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  flex-grow: 1;
+}
+.create-btn {
+  background-color: #1ac14c;
 }
 .create-btn:hover {
   background-color: #00dd09;
+}
+.reset-btn {
+  background-color: #3d69b8;
+}
+.reset-btn:hover {
+  background-color: #27519e;
+}
+
+.modal__btns {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
+}
+
+.modal__info {
+  display: none;
+  flex-direction: column;
+  padding: 5%;
+  font-size: 20px;
+  color: white;
+  align-items: start;
+  height: 200px;
+}
+
+.modal__btns {
+}
+
+.modal__btn {
+}
+
+.info {
+}
+
+.info__title {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: start;
+}
+
+.info__title-doc {
+}
+
+.info__status {
+  margin: auto 0 0 0;
+  color: #00dd09;
+}
+
+.load {
+}
+
+.load_container {
+}
+.create-btn {
+}
+.reset-btn {
 }

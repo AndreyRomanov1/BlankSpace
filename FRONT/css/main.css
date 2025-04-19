@@ -10,6 +10,8 @@ body {
 #survey-container {
   margin: 80px 15px 15px 200px;
   padding-top: 5px;
+  overflow-y: auto;
+  height: 700px;
 }/* оставляем место для фиксированного хедера */
 .question-block {
   display: flex;
@@ -78,24 +80,24 @@ hr.subquestion-separator {
   margin: 15px 0;
   border-radius: 3px;
 }
-#submitBtn {
-  margin: 30px auto;
-  padding: 12px 30px;
-  background: #1ac14c;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.3s;
-  display: block;
-}
-#submitBtn:hover {
-  background: #00dd09;
-}
-#submitBtn:active {
-  background: #388e3c;
-}
+/*#submitBtn {*/
+/*  margin: 30px auto;*/
+/*  padding: 12px 30px;*/
+/*  background: #1ac14c;*/
+/*  color: white;*/
+/*  border: none;*/
+/*  border-radius: 8px;*/
+/*  cursor: pointer;*/
+/*  font-size: 16px;*/
+/*  transition: background 0.3s;*/
+/*  display: block;*/
+/*}*/
+/*#submitBtn:hover {*/
+/*  background: #00dd09;*/
+/*}*/
+/*#submitBtn:active {*/
+/*  background: #388e3c;*/
+/*}*/
 #contractOutput {
   position: relative;
   white-space: pre-wrap;
@@ -110,7 +112,6 @@ hr.subquestion-separator {
   line-height: 1.6;
   font-family: Consolas, monospace;
   max-height: 400px;
-  overflow-y: auto;
   left: 200px;
   width: calc(100% - 220px);
 }
@@ -118,7 +119,7 @@ hr.subquestion-separator {
 ::-webkit-scrollbar {
   width: 20px;
   background: #A4ACCE;
-  background: linear-gradient(180deg,rgba(164, 172, 206, 1) 0%, rgba(0, 59, 172, 1) 100%);
+  background: linear-gradient(180deg, rgb(78, 97, 179) 0%, rgb(11, 64, 166) 100%);
   position: absolute;
   top: 10px;
 }

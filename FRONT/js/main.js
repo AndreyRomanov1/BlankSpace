@@ -12,17 +12,10 @@ function renderSurvey(survey) {
   }
   renderQuestions(survey.json.questions, container, survey, "", "");
 
-  const submitBtn = document.createElement("button");
-  submitBtn.id = "submitBtn";
-  submitBtn.textContent = "Сформировать документ";
+  const submitBtn = document.querySelector("#submitBtn");
   submitBtn.addEventListener("click", () => {
     finalizeCurrentSurvey();
   });
-  container.appendChild(submitBtn);
-
-  const contractOutput = document.createElement("pre");
-  contractOutput.id = "contractOutput";
-  container.appendChild(contractOutput);
 }
 
 function renderQuestions(questions, container, survey, level, prefix) {
@@ -30,9 +23,9 @@ function renderQuestions(questions, container, survey, level, prefix) {
   questions.forEach((question, index) => {
     const questionId = generateQuestionId(prefix, index);
 
-    const questionNumberDisplay = prefix
-      ? `${prefix}.${index + 1}`
-      : `${index + 1}`;
+    const questionNumberDisplay = (
+      prefix ? `${prefix}.${index + 1}` : `${index + 1}`
+    ).replace("q", "");
 
     const questionBlock = document.createElement("div");
     questionBlock.className = "question-block";
@@ -247,59 +240,133 @@ async function finalizeCurrentSurvey() {
 
   alert("Ответы в выводе на консоль");
 
-  console.log(survey.answers);
+  const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
+
+  console.log(GUID);
+
+  const readableStream = (
+    await fetch(`http://localhost:5159/api/FileStorage/${GUID}`)
+  ).body;
+
+  const file = URL.createObjectURL(await new Response(readableStream).blob());
+
+  const link = document.createElement("a");
+  link.href = file;
+  link.download = currentSurveyName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
 }
 
-// async function finalizeCurrentSurvey() {
-//   const survey = SURVEYS.find((s) => s.id === currentSurveyId);
-//   if (!survey) return;
+async function submitSurvey(frontendResults, fileId) {
+  const backendData = createSurveyResult(frontendResults, fileId);
 
-//   const incomplete = checkSurveyCompletionMain(survey);
-//   if (incomplete.length > 0) {
-//     alert("Ответьте на все вопросы main");
-//     return;
-//   }
+  try {
+    const response = await fetch("http://localhost:5159/api/Survey", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(backendData),
+    });
 
-//   try {
-//     const formattedAnswers = convertFlatAnswers(survey.answers);
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.message || `HTTP error! status: ${response.status}`
+      );
+    }
 
-//     const finalizeResponse = await fetch(
-//       "http://localhost:5159/api/Survey/Finalize",
-//       {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           Accept: "application/pdf",
-//         },
-//         body: JSON.stringify({
-//           fileId: survey.fileId,
-//           answers: formattedAnswers,
-//         }),
-//       }
-//     );
+    return await response.json();
+  } catch (error) {
+    console.error("Ошибка при отправке опроса:", {
+      error: error.message,
+      requestPayload: backendData,
+    });
+    throw error;
+  }
+}
 
-//     if (!finalizeResponse.ok) {
-//       throw new Error(`Ошибка запроса: ${finalizeResponse.statusText}`);
-//     }
+function createSurveyResult(flatAnswers, fileId) {
+  const currentSurvey = SURVEYS.find((s) => s.id === currentSurveyId);
 
-//     const blob = await finalizeResponse.blob();
+  if (!currentSurvey || !currentSurvey.json || !currentSurvey.json.questions) {
+    console.error("Не удалось найти текущий опрос или его структуру вопросов.");
+    return null;
+  }
 
-//     const url = window.URL.createObjectURL(blob);
-//     const link = document.createElement("a");
-//     link.href = url;
+  const originalQuestions = currentSurvey.json.questions;
 
-//     link.download = survey.name + "_contract.pdf";
-//     document.body.appendChild(link);
-//     link.click();
-//     link.remove();
+  const mapQuestionTypeToString = (typeNumber) => {
+    if (typeNumber === 0) return 0;
+    if (typeNumber === 1) return 1;
+    console.warn("Обнаружен неизвестный числовой тип вопроса:", typeNumber);
 
-//     window.URL.revokeObjectURL(url);
-//     console.log("Итоговые ответы опроса отправлены:", formattedAnswers);
-//   } catch (error) {
-//     console.error("Finalize survey error:", error);
-//     alert("Ошибка при финализации опроса: " + error.message);
-//   }
-// }
+    return null;
+  };
+
+  function processQuestionsRecursive(questions, prefix, isPathActive) {
+    if (!questions || questions.length === 0) {
+      return [];
+    }
+
+    return questions.map((question, index) => {
+      const questionId = generateQuestionId(prefix, index);
+      const userAnswerForThisLevel = flatAnswers[questionId];
+      const finalAnswer = isPathActive ? userAnswerForThisLevel || null : null;
+
+      const backendQuestionType = mapQuestionTypeToString(
+        question.questionType
+      );
+
+      const processedQuestion = {
+        questionType: backendQuestionType,
+
+        name: question.name,
+        subQuestionsByAnswer: {},
+        questionAnswer: finalAnswer,
+      };
+
+      if (
+        question.questionType === 0 &&
+        question.subQuestionsByAnswer &&
+        Object.keys(question.subQuestionsByAnswer).length > 0
+      ) {
+        processedQuestion.subQuestionsByAnswer = {};
+        for (const answerOption in question.subQuestionsByAnswer) {
+          const originalSubQuestions =
+            question.subQuestionsByAnswer[answerOption] || [];
+          const isSubPathNowActive =
+            isPathActive && userAnswerForThisLevel === answerOption;
+
+          processedQuestion.subQuestionsByAnswer[answerOption] =
+            processQuestionsRecursive(
+              originalSubQuestions,
+              questionId,
+              isSubPathNowActive
+            );
+        }
+      } else if (question.subQuestionsByAnswer) {
+        processedQuestion.subQuestionsByAnswer = {
+          ...question.subQuestionsByAnswer,
+        };
+      }
+
+      return processedQuestion;
+    });
+  }
+
+  const answeredQuestions = processQuestionsRecursive(
+    originalQuestions,
+    "",
+    true
+  );
+
+  return {
+    fileId: fileId,
+    answeredQuestions: answeredQuestions,
+  };
+}
 
 function checkSurveyCompletionMain(survey) {
   const missing = [];
@@ -331,44 +398,4 @@ function checkSurveyCompletionMain(survey) {
   checkQuestions(survey.json.questions, "");
 
   return missing;
-}
-
-function generateContractText(survey) {
-  let contractText = "--- СФОРМИРОВАННЫЙ ДОКУМЕНТ (на основе ответов) ---\n\n";
-  const answers = survey.answers || {};
-
-  function processQuestions(questions, level = 0, prefix = "") {
-    if (!questions) return;
-
-    questions.forEach((q, index) => {
-      const qId = generateQuestionId(prefix, index);
-
-      const questionNumberDisplay = prefix
-        ? `${prefix}.${index + 1}`
-        : `${index + 1}`;
-
-      contractText += `${"  ".repeat(level)}${questionNumberDisplay}. ${
-        q.name
-      }: ${
-        answers[qId] && answers[qId] !== "" ? answers[qId] : "Ответ не дан"
-      }\n`;
-
-      if (
-        q.questionType === 0 &&
-        answers[qId] &&
-        q.subQuestionsByAnswer &&
-        q.subQuestionsByAnswer[answers[qId]]
-      ) {
-        const nextPrefixForRecursion = qId;
-        processQuestions(
-          q.subQuestionsByAnswer[answers[qId]],
-          level + 1,
-          nextPrefixForRecursion
-        );
-      }
-    });
-  }
-
-  processQuestions(survey.json.questions, 0, "");
-  return contractText;
 }
