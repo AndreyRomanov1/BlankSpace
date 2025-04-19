@@ -12,10 +12,8 @@ jobs:
         include:
           - os: ubuntu-latest
             runtime: linux-x64
-            script-name: start.sh
           - os: windows-latest
             runtime: win-x64
-            script-name: start.bat
       fail-fast: false
 
     runs-on: ${{ matrix.os }}
@@ -44,27 +42,18 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         shell: bash
         run: |
-          echo '#!/bin/bash
-          ./Web &
-          sleep 5
-          xdg-open http://localhost:5000/index.html' > publish/${{ matrix.runtime }}/start.sh
-          chmod +x publish/${{ matrix.runtime }}/start.sh
           chmod +x publish/${{ matrix.runtime }}/Web
+          cp publish/${{ matrix.runtime }}/Web publish/${{ matrix.runtime }}/BlankSpace
+          chmod +x publish/${{ matrix.runtime }}/BlankSpace
 
       - name: Create Windows Startup Script
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          @'
-          @echo off
-          start "" "Web.exe"
-          timeout /t 5 >nul
-          start "" http://localhost:5000/index.html
-          exit
-          '@ | Out-File -FilePath publish/${{ matrix.runtime }}/start.bat -Encoding ASCII
+          cp publish/${{ matrix.runtime }}/Web.exe publish/${{ matrix.runtime }}/BlankSpace.exe
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Executable-${{ matrix.runtime }}
+          name: BlankSpace-${{ matrix.runtime }}
           path: publish/${{ matrix.runtime }}
