@@ -1,10 +1,11 @@
 using Domain.Exceptions;
-using Domain.Objects.Blocks;
 using Domain.Objects.Questions;
 using Domain.Objects.Storage;
 using Domain.Objects.Survey;
+using Domain.Objects.Tokens;
 using Domain.Repositories.Interfaces;
 using Domain.Services.Interfaces;
+using Xceed.Document.NET;
 using Xceed.Words.NET;
 
 namespace Domain.Services.Implementations;
@@ -20,11 +21,23 @@ public class AnsweredSurveyService(
         var file = fileStorageRepository.GetFile(fileId);
         var doc = DocX.Load(file.Stream);
         var tokens = tokenParsingService.FindTokens(doc);
+        var tokensByParagraph = new Dictionary<Paragraph, List<Token>>();
+        foreach (var token in tokens)
+        {
+            tokensByParagraph.TryAdd(token.Paragraph, []);
+            tokensByParagraph[token.Paragraph].Add(token);
+        }
+
         var blocks = blocksService.GroupTokensToBlocks(tokens);
         var survey = questionService.GetSurvey(blocks);
+
         MergeQuestionListWithAnsweredQuestionList(survey.Questions, answeredSurvey.AnsweredQuestions, true);
 
-        Fill(survey.Questions);
+        Fill(survey.Questions, tokensByParagraph);
+
+        foreach (var paragraph in tokensByParagraph.Keys.ToHashSet())
+            if (string.IsNullOrEmpty(paragraph.Text.Trim()))
+                paragraph.Remove(false);
 
         Console.WriteLine($"Документ в итоге: {doc.Paragraphs.Count} параграфов");
         var resultStream = new MemoryStream();
@@ -33,19 +46,18 @@ public class AnsweredSurveyService(
 
         var resultContentFile = new ContentFile(file.Name, resultStream);
         resultStream.Position = 0;
-        var resultFileId =
-            fileStorageRepository.AddFile(resultContentFile, TimeSpan.FromDays(12));
+        var resultFileId = fileStorageRepository.AddFile(resultContentFile, TimeSpan.FromDays(12));
 
         return resultFileId;
     }
 
-    private static void Fill(Question[] questions)
+    private static void Fill(Question[] questions, Dictionary<Paragraph, List<Token>> tokensByParagraph)
     {
         foreach (var question in questions)
         {
             try
             {
-                Fill(question);
+                Fill(question, tokensByParagraph);
             }
             catch (Exception e)
             {
@@ -54,67 +66,30 @@ public class AnsweredSurveyService(
         }
     }
 
-    private static void Fill(Question question)
+    private static void Fill(Question question, Dictionary<Paragraph, List<Token>> tokensByParagraph)
     {
         switch (question)
         {
             case IfQuestion ifQuestion:
             {
                 var selectedAnswer = ifQuestion.SelectedAnswer;
-                Console.WriteLine($"Обработка выбранного ответа {selectedAnswer!.Answer}");
                 foreach (var block in selectedAnswer!.Blocks)
                 {
-                    block.IfToken.ReplaceTokenValue("");
-                    block.EndIfToken.ReplaceTokenValue("");
+                    block.IfToken.ClearTokenValue(tokensByParagraph);
+                    block.EndIfToken.ClearTokenValue(tokensByParagraph);
                 }
 
-                Console.WriteLine($"Обработка не выбранных ответов");
-                foreach (var (answerName, answer) in ifQuestion.Answers
-                             .Where(t => t.Key != ifQuestion.SelectedAnswer!.Answer))
-                {
-                    Console.WriteLine($"Обработка не выбранного ответа: {answerName}");
-                    foreach (var block in answer!.Blocks)
-                    {
-                        var currentParagraph = block.IfToken.Paragraph;
-                        var startIndex = block.IfToken.StartIndex;
-                        Console.WriteLine("start counter");
+                foreach (var (_, answer) in ifQuestion.Answers.Where(t => t.Key != ifQuestion.SelectedAnswer!.Answer))
+                foreach (var ifBlock in answer.Blocks)
+                    ifBlock.ClearUnselectedIfBlock(tokensByParagraph);
 
-                        var counter = 0;
-                        while (currentParagraph != null && currentParagraph != block.EndIfToken.Paragraph)
-                        {
-                            Console.WriteLine(currentParagraph.Text + "  " + startIndex);
-                            currentParagraph.RemoveText(startIndex);
-                            Console.WriteLine(currentParagraph.Text);
-                            startIndex = 0;
-                            var next = currentParagraph.NextParagraph;
-                            if (currentParagraph.Text.Trim().Length == 0)
-                                currentParagraph.Remove(true);
-                            currentParagraph = next;
-                            counter++;
-                            Console.WriteLine(counter);
-                        }
-
-                        Console.WriteLine("end counter");
-                        currentParagraph?.RemoveText(startIndex, block.EndIfToken.EndIndex - startIndex + 1);
-                    }
-                    Console.WriteLine($"Конец обработки не выбранного ответа: {answerName}");
-
-                }
-
-                Console.WriteLine($"Заполняем подвопросы для {selectedAnswer.Answer}. Их {selectedAnswer.SubQuestions.Length} штук");
-                Fill(selectedAnswer.SubQuestions);
-                Console.WriteLine($"Конец подвопросов для {selectedAnswer.Answer}");
+                Fill(selectedAnswer.SubQuestions, tokensByParagraph);
                 break;
             }
             case InputQuestion inputQuestion:
             {
-                Console.WriteLine($"Поле ввода {inputQuestion.Name}: {inputQuestion.EnteredValue}");
                 foreach (var block in inputQuestion.Blocks)
-                {
-                    Console.WriteLine(block.InputToken.Paragraph.PreviousParagraph?.Text);
-                    Console.WriteLine(block.InputToken.Paragraph.Text);
-                    block.InputToken.ReplaceTokenValue(inputQuestion.EnteredValue!);
-                }
+                    block.InputToken.ReplaceTokenValue(inputQuestion.EnteredValue!, tokensByParagraph);
 
                 break;
             }
@@ -169,12 +144,14 @@ public class AnsweredSurveyService(
                             isActiveQuestions);
                     }
 
-                    foreach (var (answerName, answer) in ifQuestion.Answers.Where(
-                                 a => ifQuestion.SelectedAnswer != a.Value))
+                    foreach (var (answerName, answer) in ifQuestion.Answers
+                                 .Where(a => ifQuestion.SelectedAnswer != a.Value))
+                    {
                         MergeQuestionListWithAnsweredQuestionList(
                             answer.SubQuestions,
                             answeredQuestionView.SubQuestionByAnswer[answerName],
                             false);
+                    }
 
                     break;
                 }

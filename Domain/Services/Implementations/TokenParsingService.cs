@@ -23,7 +23,7 @@ public class TokenParsingService(ITokenFactory tokenFactory) : ITokenParsingServ
                         tokenType,
                         paragraph,
                         match.Index,
-                        match.Index + match.Length - 1,
+                        match.Index + match.Length,
                         match.Value);
 
                     foundTokens.Add(token);

@@ -5,45 +5,100 @@ namespace Domain.Objects.Tokens;
 public abstract class Token(Paragraph paragraph, int startIndex, int endIndex, string text, string questionText)
 {
     public Paragraph Paragraph { get; } = paragraph;
-    public int StartIndex { get; } = startIndex;
-    public int EndIndex { get; } = endIndex;
+    public int StartIndex { get; set; } = startIndex;
+    public int EndIndex { get; set; } = endIndex;
     public string Text { get; } = text;
     public string QuestionText { get; } = questionText;
 
     public abstract TokenType GetTokenType();
 
-    public void ReplaceTokenValue(string insertedText)
+    public void ReplaceTokenValue(string insertedText, Dictionary<Paragraph, List<Token>> tokensByParagraph)
     {
-        Console.WriteLine($"{StartIndex} {EndIndex} {Paragraph.Text.Length} {insertedText}");
+        Console.WriteLine($"{nameof(ReplaceTokenValue)}: {Text}");
 
-        if (Paragraph.Text.Length <= EndIndex - StartIndex + 1)
+        var initEnd = EndIndex;
+        if (Paragraph.Text.Length < EndIndex)
         {
-            Paragraph.RemoveText(0);
-            Paragraph.InsertText(0, insertedText);
-            Console.WriteLine("заменил:   [" + Paragraph.Text + "]");
-            if (Paragraph.Text.Trim().Length == 0)
-            {
-                Paragraph.Remove(true);
-                Console.WriteLine("удалил маленький 1");
-            }
+            Console.WriteLine(
+                $"ERROR: Параграф имеет меньшую длину, чем конец токена. {StartIndex} {EndIndex} {Paragraph.Text.Length} {Paragraph.Text}");
+            return;
 
+        }
+
+        Paragraph.RemoveText(StartIndex, EndIndex - StartIndex, false, false);
+        Paragraph.InsertText(StartIndex, insertedText, false);
+        EndIndex = StartIndex + insertedText.Length;
+
+        var deltaIndex = EndIndex - initEnd;
+        foreach (var token in tokensByParagraph[Paragraph]
+                     .Where(token => token.StartIndex >= StartIndex && token != this))
+        {
+            token.StartIndex += deltaIndex;
+            token.EndIndex += deltaIndex;
+        }
+    }
+
+    public void ClearTokenValue(Dictionary<Paragraph, List<Token>> tokensByParagraph)
+    {
+        Console.WriteLine($"{nameof(ClearTokenValue)}: {Text}");
+
+        var initEnd = EndIndex;
+
+        if (Paragraph.Text.Length < EndIndex)
+        {
+            Console.WriteLine(
+                $"ERROR: Параграф имеет меньшую длину, чем конец токена. {StartIndex} {EndIndex} {Paragraph.Text.Length} {Paragraph.Text}");
             return;
         }
 
-        try
+        Paragraph.RemoveText(StartIndex, EndIndex - StartIndex, false, false);
+        EndIndex = StartIndex;
+
+        var deltaIndex = EndIndex - initEnd;
+        foreach (var token in tokensByParagraph[Paragraph]
+                     .Where(token => token.StartIndex >= StartIndex && token != this))
         {
-            Paragraph.RemoveText(StartIndex, EndIndex - StartIndex + 1);
-            Paragraph.InsertText(StartIndex, insertedText);
-            Console.WriteLine("заменил");
-            if (Paragraph.Text.Trim().Length == 0)
-            {
-                Paragraph.Remove(true);
-                Console.WriteLine("удалил маленький 2");
-            }
+            token.StartIndex += deltaIndex;
+            token.EndIndex += deltaIndex;
         }
-        catch (Exception e)
+    }
+
+    public void ClearAfterToken(Dictionary<Paragraph, List<Token>> tokensByParagraph)
+    {
+        Console.WriteLine($"{nameof(ClearAfterToken)}: {Text}");
+
+        if (Paragraph.Text.Length < EndIndex)
         {
-            Console.WriteLine($"Ошибка во время удаление внутри токена: {e}");
+            Console.WriteLine(
+                $"ERROR: Параграф имеет меньшую длину, чем конец токена. {StartIndex} {EndIndex} {Paragraph.Text.Length} {Paragraph.Text}");
+            return;
+        }
+
+        Paragraph.RemoveText(StartIndex, Paragraph.Text.Length - StartIndex, false, false);
+        EndIndex = StartIndex;
+    }
+
+    public void ClearBeforeToken(Dictionary<Paragraph, List<Token>> tokensByParagraph)
+    {
+        Console.WriteLine($"{nameof(ClearBeforeToken)}: {Text}");
+
+        var initEnd = EndIndex;
+
+        if (Paragraph.Text.Length < EndIndex)
+        {
+            Console.WriteLine(
+                $"ERROR: Параграф имеет меньшую длину, чем конец токена. {StartIndex} {EndIndex} {Paragraph.Text.Length} {Paragraph.Text}");
+            return;
+        }
+
+        Paragraph.RemoveText(0, EndIndex, false, false);
+        StartIndex = 0;
+        EndIndex = 0;
+        foreach (var token in tokensByParagraph[Paragraph]
+                     .Where(token => token.StartIndex >= StartIndex && token != this))
+        {
+            token.StartIndex -= initEnd;
+            token.EndIndex -= initEnd;
         }
     }
 }
