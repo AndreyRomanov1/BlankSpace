@@ -50,7 +50,7 @@ public class IfBlock(
     private void ClearUnselectedIfBlockInSingleParagraph(Dictionary<Paragraph, List<Token>> tokensByParagraph)
     {
         Console.WriteLine($"{nameof(ClearUnselectedIfBlockInSingleParagraph)}: {IfToken.Text}");
-
+        var initEnd = EndIfToken.EndIndex;
         if (EndIfToken.Paragraph.Text.Length < EndIfToken.EndIndex)
         {
             Console.WriteLine(
@@ -67,13 +67,14 @@ public class IfBlock(
         EndIfToken.StartIndex = IfToken.StartIndex;
         EndIfToken.EndIndex = IfToken.StartIndex;
 
+        var deltaIndex = EndIfToken.EndIndex - initEnd;
         foreach (var token in tokensByParagraph[EndIfToken.Paragraph]
                      .Where(token =>
                          token.StartIndex >= EndIfToken.StartIndex
                          && token != EndIfToken))
         {
-            token.StartIndex -= EndIfToken.EndIndex;
-            token.EndIndex -= EndIfToken.EndIndex;
+            token.StartIndex += deltaIndex;
+            token.EndIndex += deltaIndex;
         }
     }
 }
