@@ -22,6 +22,6 @@ public partial class InputToken(Paragraph paragraph, int startIndex, int endInde
         return question;
     }
 
-    [GeneratedRegex(@"\{ВВОД\s+\(([^)]+)\)\}", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"\{\s*ВВОД\s*\(([^)]+)\)\s*\}", RegexOptions.IgnoreCase)]
     public static partial Regex MyRegex();
 }

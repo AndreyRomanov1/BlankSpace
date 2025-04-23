@@ -11,6 +11,6 @@ public partial class EndIfToken(Paragraph paragraph, int startIndex, int endInde
         return TokenType.EndIf;
     }
 
-    [GeneratedRegex(@"\{КОНЕЦ\s+ЕСЛИ\}", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"\{\s*КОНЕЦ\s*ЕСЛИ\s*\}", RegexOptions.IgnoreCase)]
     public static partial Regex MyRegex();
 }

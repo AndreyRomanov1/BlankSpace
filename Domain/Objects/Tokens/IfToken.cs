@@ -35,6 +35,6 @@ public partial class IfToken(Paragraph paragraph, int startIndex, int endIndex, 
         return answer;
     }
 
-    [GeneratedRegex(@"\{ЕСЛИ\s+\(([^)]+)\)\s+\(([^)]+)\)\}", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"\{\s*ЕСЛИ\s*\(([^)]+)\)\s*\(([^)]+)\)\s*\}", RegexOptions.IgnoreCase)]
     public static partial Regex MyRegex();
 }
