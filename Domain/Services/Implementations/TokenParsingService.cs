@@ -14,6 +14,7 @@ public class TokenParsingService(ITokenFactory tokenFactory) : ITokenParsingServ
         foreach (var paragraph in document.Paragraphs)
         {
             var paragraphText = paragraph.Text;
+            var tokensInParagraph = new List<Token>();
             foreach (var (tokenType, tokenRegex) in tokenTypes)
             {
                 var matches = tokenRegex.Matches(paragraphText);
@@ -26,9 +27,10 @@ public class TokenParsingService(ITokenFactory tokenFactory) : ITokenParsingServ
                         match.Index + match.Length,
                         match.Value);
 
-                    foundTokens.Add(token);
+                    tokensInParagraph.Add(token);
                 }
             }
+            foundTokens.AddRange(tokensInParagraph.OrderBy(t => t.StartIndex));
         }
 
         return foundTokens.ToArray();
