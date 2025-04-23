@@ -1,3 +1,4 @@
+using Domain.Exceptions;
 using Domain.Objects.Blocks;
 using Domain.Objects.Tokens;
 using Domain.Services.Interfaces;
@@ -10,7 +11,7 @@ public class BlocksService : IBlocksService
     {
         var (blocks, endIndex) = GroupTokensToBlocksByRecursively(tokens);
         if (endIndex != null)
-            throw new Exception("Условие не было завершено");
+            throw new BadRequestException($"Условие не было завершено. Токены: {string.Join(", ", blocks.Select(t => t.ToString()))}");
 
         return blocks;
     }
@@ -31,7 +32,7 @@ public class BlocksService : IBlocksService
                     var (childBlocks, endIfIndex) = GroupTokensToBlocksByRecursively(tokens, i + 1);
 
                     if (endIfIndex == null)
-                        throw new Exception("Условие не было завершено");
+                        throw new BadRequestException($"Условие не было завершено. Начальный токен: {string.Join(", ", ifToken.Text)}");
 
                     var endIfToken = (EndIfToken)tokens[endIfIndex.Value];
                     var ifBlock = new IfBlock(ifToken, endIfToken, childBlocks);

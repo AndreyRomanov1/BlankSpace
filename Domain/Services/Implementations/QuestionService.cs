@@ -78,10 +78,19 @@ public class QuestionService : IQuestionService
         {
             if (question.Value is not IfQuestion ifQuestion)
                 continue;
-            foreach (var answer in ifQuestion.Answers)
+            var copy = ifQuestion.Answers.ToDictionary();
+            foreach (var answer in copy)
                 answer.Value.SubQuestions =
                     GetQuestionsByRecursively(answer.Value.Blocks.SelectMany(t => t.ChildBlocks).ToArray(),
                         nextParentQuestions);
+            if (copy.Count != ifQuestion.Answers.Count)
+            {
+                Console.WriteLine("Поймали баг. Это его фикс");
+                foreach (var answer in ifQuestion.Answers.Where(t => !copy.ContainsKey(t.Key)))
+                    answer.Value.SubQuestions =
+                        GetQuestionsByRecursively(answer.Value.Blocks.SelectMany(t => t.ChildBlocks).ToArray(),
+                            nextParentQuestions);
+            }
         }
 
         return currentQuestions.Select(t => t.Value).ToArray();

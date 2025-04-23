@@ -22,15 +22,26 @@ public class SurveyController(
         }
         catch (NotFoundException ex)
         {
+            Console.WriteLine(ex);
+            Console.WriteLine();
+            Console.WriteLine();
             return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(404, ex.Message));
         }
         catch (ArgumentException ex)
         {
+            Console.WriteLine(ex);
+            Console.WriteLine();
+            Console.WriteLine();
+
             return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(400, ex.Message));
         }
-        catch
+        catch (Exception ex)
         {
-            return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(500, "Error processing document"));
+            Console.WriteLine(ex);
+            Console.WriteLine();
+            Console.WriteLine();
+
+            return Task.FromResult<ActionResult<Response.Survey>>(StatusCode(500, $"Error processing document. {ex.Message}"));
         }
     }
 
@@ -41,6 +52,7 @@ public class SurveyController(
         Console.WriteLine("\n\n\n--------------------------------------");
         var fileId = answeredSurveyService.FillDocByAnsweredSurvey(answeredSurvey.fileId, answeredSurvey.FromRequest());
         Console.WriteLine("\n\n\n--------------------------------------");
-        return Task.FromResult<ActionResult<Response.InsertSurveyAnswerToDocumentResult>>(new Response.InsertSurveyAnswerToDocumentResult(fileId));
+        return Task.FromResult<ActionResult<Response.InsertSurveyAnswerToDocumentResult>>(
+            new Response.InsertSurveyAnswerToDocumentResult(fileId));
     }
 }
