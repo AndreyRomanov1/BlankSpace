@@ -21,6 +21,7 @@ public static class ConfigureServices
         serviceCollection.AddSingleton<IQuestionService, QuestionService>();
         serviceCollection.AddSingleton<ISurveyService, SurveyService>();
         serviceCollection.AddSingleton<IAnsweredSurveyService, AnsweredSurveyService>();
+        serviceCollection.AddSingleton<IMetricsService, MetricsService>();
         return serviceCollection;
     }
 
