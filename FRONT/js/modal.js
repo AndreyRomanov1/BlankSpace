@@ -59,10 +59,12 @@ function initModalEvents() {
       alert("Выберите файл для загрузки");
     }
   });
+  createBtn.disabled = true;
 
   const resetBtn = document.querySelector(".reset-btn");
   resetBtn.addEventListener("click", () => {
     updateModal("reset");
+    createBtn.disabled = true;
   });
 }
 
@@ -106,12 +108,12 @@ function updateModal(type, error = null) {
     docTitle.textContent = currentSurveyName;
     if (error) {
       status.textContent = "Некорректный шаблон";
-      status.classList.add("invalid-template"); // Добавляем класс для стилизации
-      createBtn.disabled = true; // Делаем кнопку неактивной
+      status.classList.add("invalid-template");
+      createBtn.disabled = true;
     } else {
       status.textContent = "Шаблон корректен";
-      status.classList.remove("invalid-template"); // Убираем класс если шаблон корректен
-      createBtn.disabled = false; // Активируем кнопку
+      status.classList.remove("invalid-template");
+      createBtn.disabled = false;
     }
   }
 }
