@@ -1,5 +1,5 @@
 window.addEventListener('load', function() {
-  setTimeout(openModal, 100);
+  setTimeout(openModal);
 });
 function generateQuestionId(prefix, index) {
   const questionNumber = index + 1;
