@@ -1,3 +1,6 @@
+window.addEventListener('load', function() {
+  setTimeout(openModal, 100);
+});
 function generateQuestionId(prefix, index) {
   const questionNumber = index + 1;
   return prefix ? `${prefix}.${questionNumber}` : `q${questionNumber}`;
