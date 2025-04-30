@@ -147,7 +147,6 @@ async function uploadFile(file) {
     if (!surveyResponse.ok) {
       updateModal("init", `Failed to get survey: ${surveyResponse.statusText}`);
       return;
-      // throw new Error(`Failed to get survey: ${surveyResponse.statusText}`);
     }
 
     surveyData = await surveyResponse.json();

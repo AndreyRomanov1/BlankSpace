@@ -1,3 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {}, 500);
+  setTimeout(() => {
+    const submitBtn = document.querySelector("#submitBtn");
+    submitBtn.addEventListener("click", () => {
+      finalizeCurrentSurvey();
+    });
+  }, 500);
 });

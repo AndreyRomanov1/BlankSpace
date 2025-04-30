@@ -11,10 +11,36 @@ function renderSurvey(survey) {
     return;
   }
   renderQuestions(survey.json.questions, container, survey, "", "");
+}
 
-  const submitBtn = document.querySelector("#submitBtn");
-  submitBtn.addEventListener("click", () => {
-    finalizeCurrentSurvey();
+function removeSubAnswers(answers, question, parentQuestionId, selectedAnswer) {
+  if (!question.subQuestionsByAnswer) return;
+
+  for (const answerOption in question.subQuestionsByAnswer) {
+    if (answerOption !== selectedAnswer) {
+      const subQuestions = question.subQuestionsByAnswer[answerOption];
+      removeAnswersRecursive(answers, subQuestions, parentQuestionId);
+    }
+  }
+}
+
+function removeAnswersRecursive(answers, questions, prefix) {
+  if (!questions || questions.length === 0) return;
+
+  questions.forEach((subQ, index) => {
+    const subQId = generateQuestionId(prefix, index);
+
+    delete answers[subQId];
+
+    if (subQ.subQuestionsByAnswer) {
+      for (const ansOpt in subQ.subQuestionsByAnswer) {
+        removeAnswersRecursive(
+          answers,
+          subQ.subQuestionsByAnswer[ansOpt],
+          subQId
+        );
+      }
+    }
   });
 }
 
@@ -68,6 +94,13 @@ function renderQuestions(questions, container, survey, level, prefix) {
           }
           radio.addEventListener("change", (event) => {
             survey.answers[questionId] = event.target.value;
+
+            removeSubAnswers(
+              survey.answers,
+              question,
+              questionId,
+              event.target.value
+            );
 
             handleSubQuestions(
               question,
@@ -238,8 +271,6 @@ async function finalizeCurrentSurvey() {
     return;
   }
 
-  // alert("Ответы в выводе на консоль");
-
   const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
 
   console.log(GUID);
@@ -248,14 +279,45 @@ async function finalizeCurrentSurvey() {
     await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)
   ).body;
 
-  const file = URL.createObjectURL(await new Response(readableStream).blob());
+  const file = await new Response(readableStream).blob();
 
-  const link = document.createElement("a");
-  link.href = file;
-  link.download = currentSurveyName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  if (window.showSaveFilePicker) {
+    try {
+      const opts = {
+        suggestedName: currentSurveyName,
+        types: [
+          {
+            description: "Документ",
+            accept: {
+              "application/octet-stream": [".docx", ".doc", ".txt"],
+            },
+          },
+        ],
+      };
+
+      const fileHandle = await window.showSaveFilePicker(opts);
+      const writable = await fileHandle.createWritable();
+
+      await writable.write(file);
+
+      await writable.close();
+
+      console.log("Файл сохранён пользователем.");
+    } catch (err) {
+      console.error("Ошибка или отмена сохранения:", err);
+    }
+  } else {
+    const fileURL = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = fileURL;
+    link.download = currentSurveyName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    alert(
+      "Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка."
+    );
+  }
 }
 
 async function submitSurvey(frontendResults, fileId) {
