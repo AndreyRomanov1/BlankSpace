@@ -16,18 +16,23 @@
 
 .survey-item {
   padding: 10px 15px;
-  border-bottom: 1px solid #ddd;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  border-top: 1px solid white;
+  border-bottom: 1px solid white;
 }
 
 .survey-item span {
   width: 100%;
   text-align: start;
   margin: 4% 0;
+  color: white;
+  font-size: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .survey-item:hover {
@@ -35,10 +40,6 @@
 }
 .survey-item.active {
   background-color: rgb(170,181,223, 0.4);
-  color: white;
-  font-size: 20px;
-  border-top: 1px solid white;
-  border-bottom: 1px solid white;
 }
 
 .survey-actions {

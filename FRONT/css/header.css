@@ -1,5 +1,5 @@
 .header {
-  background-color: rgba(164, 172, 206);
+  background-color: #436296;
   height: 60px;
   padding-top: 5px;
   position: fixed;
@@ -21,6 +21,8 @@
   font-size: 30px;
   font-family: Inter, sans-serif;
   margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .done {
