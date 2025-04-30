@@ -6,9 +6,8 @@ body {
 }
 #survey-container {
   margin: 80px 15px 15px 200px;
-  padding-top: 5px;
   overflow-y: auto;
-  height: 700px;
+  height: 89vh;
 }/* оставляем место для фиксированного хедера */
 .question-block {
   display: flex;
@@ -17,7 +16,7 @@ body {
   background-color: rgba(255, 255, 255, 0.3);
   border-radius: 15px;
   padding: 20px;
-  margin: 20px auto 0 auto;
+  margin: 0 auto 20px auto;
   color: white;
 }
 .question-block h3 {
@@ -116,8 +115,6 @@ hr.subquestion-separator {
 ::-webkit-scrollbar {
   width: 20px;
   background: linear-gradient(180deg, #0B3276 0% , #024CB7 100%);
-  position: absolute;
-  top: 10px;
 }
 
 ::-webkit-scrollbar-track {
