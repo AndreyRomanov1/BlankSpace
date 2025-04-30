@@ -89,6 +89,7 @@ function updateModal(type, error = null) {
   const modalInfo = document.querySelector(".info");
   const docTitle = document.querySelector(".info__title-doc");
   const status = document.querySelector(".info__status");
+  const createBtn = document.querySelector(".create-btn");
   if (type === "reset") {
     dropZone.style.display = "block";
     modalInfo.style.display = "none";
@@ -103,7 +104,15 @@ function updateModal(type, error = null) {
     dropZone.style.display = "none";
     modalInfo.style.display = "flex";
     docTitle.textContent = currentSurveyName;
-    status.textContent = error ? "Ошибка" : "Корректно";
+    if (error) {
+      status.textContent = "Некорректный шаблон";
+      status.classList.add("invalid-template"); // Добавляем класс для стилизации
+      createBtn.disabled = true; // Делаем кнопку неактивной
+    } else {
+      status.textContent = "Шаблон корректен";
+      status.classList.remove("invalid-template"); // Убираем класс если шаблон корректен
+      createBtn.disabled = false; // Активируем кнопку
+    }
   }
 }
 

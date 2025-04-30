@@ -118,7 +118,20 @@
 
 .info__status {
   margin: auto 0 0 0;
-  color: #00dd09;
+  color: #388e3c;
+  font-weight: 750;
+  font-size: 20px;
+}
+
+.info__status.invalid-template {
+  color: #d00000;
+  font-weight: bold;
+}
+
+.create-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #cccccc;
 }
 
 .load {

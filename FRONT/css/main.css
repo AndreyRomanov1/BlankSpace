@@ -1,10 +1,7 @@
 body {
-  background-image: url("../images/background_image.png");
+  background: linear-gradient(180deg, #0B3276 0% , #024CB7 100%);
   margin: 0;
   background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   font-family: Inter, sans-serif;
 }
 #survey-container {
@@ -17,7 +14,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 70%;
-  background-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.3);
   border-radius: 15px;
   padding: 20px;
   margin: 20px auto 0 auto;
@@ -118,19 +115,16 @@ hr.subquestion-separator {
 
 ::-webkit-scrollbar {
   width: 20px;
-  background: #A4ACCE;
-  background: linear-gradient(180deg, rgb(78, 97, 179) 0%, rgb(11, 64, 166) 100%);
+  background: linear-gradient(180deg, #0B3276 0% , #024CB7 100%);
   position: absolute;
   top: 10px;
 }
 
-/* Дорожка скроллбара (фон) */
 ::-webkit-scrollbar-track {
   background: rgba(164, 172, 206);
   border-radius: 10px;
 }
 
-/* Ползунок скроллбара */
 ::-webkit-scrollbar-thumb {
   background: white;
   border-radius: 10px;
