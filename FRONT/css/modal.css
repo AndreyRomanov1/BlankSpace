@@ -114,6 +114,8 @@
 }
 
 .info__title-doc {
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .info__status {
