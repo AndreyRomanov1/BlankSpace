@@ -1,6 +1,6 @@
 namespace Web.Dto.Response;
 
 public record Question(
-    QuestionType questionType,
+    QuestionType QuestionType,
     string Name,
     Dictionary<string, Question[]> SubQuestionsByAnswer);
