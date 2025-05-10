@@ -2,11 +2,27 @@ function openModal() {
   const modalOverlay = document.getElementById("modal-overlay");
   loadModalContent();
   modalOverlay.classList.remove("hidden");
+
+  // Добавляем обработчик клика по оверлею
+  modalOverlay.addEventListener('click', handleOverlayClick);
 }
 
 function closeModal() {
   const modalOverlay = document.getElementById("modal-overlay");
   modalOverlay.classList.add("hidden");
+
+  // Удаляем обработчик при закрытии
+  modalOverlay.removeEventListener('click', handleOverlayClick);
+}
+
+// Новая функция для обработки клика по оверлею
+function handleOverlayClick(e) {
+  const modalContent = document.getElementById("modal-content");
+
+  // Проверяем, был ли клик вне модального контента
+  if (!modalContent.contains(e.target)) {
+    closeModal();
+  }
 }
 
 async function loadModalContent() {
@@ -26,15 +42,20 @@ function initModalEvents() {
   if (closeBtn) {
     closeBtn.addEventListener("click", closeModal);
   }
+
+  // Остальной код initModalEvents остается без изменений
   const loadContainer = document.querySelector(".load_container");
   const fileInput = document.getElementById("fileInput");
+
   loadContainer.addEventListener("dragover", (e) => {
     e.preventDefault();
     loadContainer.classList.add("drag-over");
   });
+
   loadContainer.addEventListener("dragleave", () => {
     loadContainer.classList.remove("drag-over");
   });
+
   loadContainer.addEventListener("drop", (e) => {
     e.preventDefault();
     loadContainer.classList.remove("drag-over");
@@ -42,9 +63,12 @@ function initModalEvents() {
       handleFiles(e.dataTransfer.files);
     }
   });
-  loadContainer.addEventListener("click", () => {
+
+  loadContainer.addEventListener("click", (e) => {
+    e.stopPropagation(); // Предотвращаем закрытие при клике внутри контейнера
     fileInput.click();
   });
+
   fileInput.addEventListener("change", () => {
     if (fileInput.files.length) {
       handleFiles(fileInput.files);
@@ -72,7 +96,7 @@ function showSurvey() {
   const newSurvey = {
     id: "survey-" + Date.now(),
     fileId: currentSurveyId,
-    name: currentSurveyName,
+    name: currentSurveyName.slice(0, -5),
     json: surveyData,
     answers: {},
     originalFile: FILE,

@@ -24,6 +24,6 @@ function saveSurveysToStorage() {
 function changeSurveyHeaderName() {
   const surveNameHolder = document.querySelector(".nameFile");
   if (currentSurveyName.length != 0) {
-    surveNameHolder.textContent = currentSurveyName;
+    surveNameHolder.textContent = currentSurveyName.slice(0, -5);
   }
 }
