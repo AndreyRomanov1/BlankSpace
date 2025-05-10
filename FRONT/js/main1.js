@@ -214,6 +214,199 @@ function handleSubQuestions(question, answer, parentQuestionBlock, survey, quest
   }
 }
 
+function convertFlatAnswers(flatAnswers) {
+  const nestedAnswers = {};
+
+  Object.keys(flatAnswers).forEach((key) => {
+    const value = flatAnswers[key];
+
+    const keys = key.split(".");
+
+    let current = nestedAnswers;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      const part = keys[i];
+      if (!(part in current)) {
+        current[part] = {};
+      }
+      current = current[part];
+    }
+
+    current[keys[keys.length - 1]] = value;
+  });
+  return nestedAnswers;
+}
+
+function convertFlatAnswers(flatAnswers) {
+  const nestedAnswers = {};
+  Object.keys(flatAnswers).forEach((key) => {
+    const value = flatAnswers[key];
+    const keys = key.split(".");
+    let current = nestedAnswers;
+    for (let i = 0; i < keys.length - 1; i++) {
+      const part = keys[i];
+
+      if (!(part in current)) {
+        current[part] = {};
+      } else if (typeof current[part] !== "object" || current[part] === null) {
+        current[part] = { _value: current[part] };
+      }
+      current = current[part];
+    }
+    const lastKey = keys[keys.length - 1];
+
+    if (
+        lastKey in current &&
+        typeof current[lastKey] === "object" &&
+        current[lastKey] !== null
+    ) {
+      current[lastKey]._value = value;
+    } else {
+      current[lastKey] = value;
+    }
+  });
+  return nestedAnswers;
+}
+
+async function finalizeCurrentSurvey() {
+  const survey = SURVEYS.find((s) => s.id === currentSurveyId);
+  if (!survey) return;
+  const incomplete = checkSurveyCompletionMain(survey);
+  if (incomplete.length > 0) {
+    alert("Ответьте на все вопросы main");
+    return;
+  }
+
+  // alert("Ответы в выводе на консоль");
+
+  const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
+
+  console.log(GUID);
+
+  const readableStream = (
+      await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)
+  ).body;
+
+  const file = URL.createObjectURL(await new Response(readableStream).blob());
+
+  const link = document.createElement("a");
+  link.href = file;
+  link.download = currentSurveyName;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+async function submitSurvey(frontendResults, fileId) {
+  const backendData = createSurveyResult(frontendResults, fileId);
+
+  try {
+    const response = await fetch(`${baseApiUrl}/Survey`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(backendData),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error("Ошибка при отправке опроса:", {
+      error: error.message,
+      requestPayload: backendData,
+    });
+    throw error;
+  }
+}
+
+function createSurveyResult(flatAnswers, fileId) {
+  const currentSurvey = SURVEYS.find((s) => s.id === currentSurveyId);
+
+  if (!currentSurvey || !currentSurvey.json || !currentSurvey.json.questions) {
+    console.error("Не удалось найти текущий опрос или его структуру вопросов.");
+    return null;
+  }
+
+  const originalQuestions = currentSurvey.json.questions;
+
+  const mapQuestionTypeToString = (typeNumber) => {
+    if (typeNumber === 0) return 0;
+    if (typeNumber === 1) return 1;
+    console.warn("Обнаружен неизвестный числовой тип вопроса:", typeNumber);
+
+    return null;
+  };
+
+  function processQuestionsRecursive(questions, prefix, isPathActive) {
+    if (!questions || questions.length === 0) {
+      return [];
+    }
+
+    return questions.map((question, index) => {
+      const questionId = generateQuestionId(prefix, index);
+      const userAnswerForThisLevel = flatAnswers[questionId];
+      const finalAnswer = isPathActive ? userAnswerForThisLevel || null : null;
+
+      const backendQuestionType = mapQuestionTypeToString(
+          question.questionType
+      );
+
+      const processedQuestion = {
+        questionType: backendQuestionType,
+
+        name: question.name,
+        subQuestionsByAnswer: {},
+        questionAnswer: finalAnswer,
+      };
+
+      if (
+          question.questionType === 0 &&
+          question.subQuestionsByAnswer &&
+          Object.keys(question.subQuestionsByAnswer).length > 0
+      ) {
+        processedQuestion.subQuestionsByAnswer = {};
+        for (const answerOption in question.subQuestionsByAnswer) {
+          const originalSubQuestions =
+              question.subQuestionsByAnswer[answerOption] || [];
+          const isSubPathNowActive =
+              isPathActive && userAnswerForThisLevel === answerOption;
+
+          processedQuestion.subQuestionsByAnswer[answerOption] =
+              processQuestionsRecursive(
+                  originalSubQuestions,
+                  questionId,
+                  isSubPathNowActive
+              );
+        }
+      } else if (question.subQuestionsByAnswer) {
+        processedQuestion.subQuestionsByAnswer = {
+          ...question.subQuestionsByAnswer,
+        };
+      }
+
+      return processedQuestion;
+    });
+  }
+
+  const answeredQuestions = processQuestionsRecursive(
+      originalQuestions,
+      "",
+      true
+  );
+
+  return {
+    fileId: fileId,
+    answeredQuestions: answeredQuestions,
+  };
+}
+
 function checkSurveyCompletionMain(survey) {
   const missing = [];
   const answers = survey.answers || {};
@@ -255,14 +448,10 @@ async function finalizeCurrentSurvey() {
 
   try {
     const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
-
     console.log(GUID);
   const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
 
-    const readableStream = (
-        await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)
-    ).body;
-
+    const readableStream = (await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)).body;
     const file = URL.createObjectURL(await new Response(readableStream).blob());
 
     const link = document.createElement("a");
