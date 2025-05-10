@@ -1,12 +1,10 @@
 body {
-    background-image: url("../images/background_image.png");
     color: white;
     display: flex;
     margin: 3%;
     flex-direction: column;
     align-items: center;
     align-content: center;
-
 }
 
 .load_container {

@@ -8,6 +8,7 @@
   overflow-y: auto;
   padding-top: 10px;
   border-right: 4px solid white;
+  transition: width 0.3s ease;
 }
 
 #survey-list {
@@ -76,14 +77,19 @@
 }
 
 .text-opros {
-  padding: 10px;
   color: white;
-  margin-left: 85px;
+  margin-left: 33px;
+  padding-top: 15px;
+  font-size: 30px;
+  font-weight: 600;
+  user-select: none
 }
 
-.upload {
+.upload,
+.collapsed-upload,
+.panel-toggle {
   cursor: pointer;
-  width: 50px;
+  min-width: 50px;
   height: 50px;
   font-size: 40px;
   font-weight: bold;
@@ -96,12 +102,71 @@
   justify-content: center;
   transition: background-color 0.3s;
   box-shadow: #515151 1px 2px 3px;
-  margin-left: 40px;
-  margin-top: -5px;
+  user-select: none
+}
+
+.upload {
+  margin-left: 33px;
+}
+
+.panel-toggle {
+  margin-left: 10px;
 }
 
 .upload:active,
-.upload:hover {
+.upload:hover,
+.collapsed-upload:active,
+.collapsed-upload:hover,
+.panel-toggle:hover,
+.panel-toggle:active {
   background-color: #6b94e3;
+}
+
+
+#left-panel.collapsed {
+  width: 75px;
+  overflow: hidden;
+}
+
+#left-panel.collapsed .text-opros,
+#left-panel.collapsed .upload:not(.collapsed-upload),
+#left-panel.collapsed #survey-list {
+  display: none;
+}
+
+.collapsed-upload-container {
+  display: none;
+}
+
+#left-panel.collapsed .collapsed-upload-container {
+  display: block;
+}
+
+.collapsed-upload {
+  margin-left: 10px;
+  margin-top: 30px;
+}
+
+body.left-panel-collapsed #left-panel {
+  width: 75px;
+}
+
+/* Стили для содержимого панели */
+body.left-panel-collapsed #left-panel .text-opros,
+body.left-panel-collapsed #left-panel .upload:not(.collapsed-upload),
+body.left-panel-collapsed #left-panel #survey-list {
+  display: none;
+}
+
+.collapsed-upload-container {
+  display: none;
+}
+
+body.left-panel-collapsed #left-panel .collapsed-upload-container {
+  display: block;
+}
+
+.left-panel-icon {
+  width: 30px;
 }
 
