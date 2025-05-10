@@ -1,3 +1,3 @@
 namespace Web.Dto.Response;
 
-public record Survey(Question[] Questions);
+public record Survey(Question[] questions);

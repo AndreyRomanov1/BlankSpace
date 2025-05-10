@@ -1,4 +1,4 @@
-window.addEventListener('load', function() {
+window.addEventListener("load", function () {
   setTimeout(openModal, 100);
 });
 function generateQuestionId(prefix, index) {
@@ -79,6 +79,7 @@ function renderQuestions(questions, container, survey, level, prefix) {
       input.addEventListener("change", (event) => {
         survey.answers[questionId] = event.target.value;
         saveSurveysToStorage();
+        saveMetrik(questionId);
       });
       answerContainer.appendChild(input);
     } else if (question.questionType === 0) {
@@ -113,6 +114,7 @@ function renderQuestions(questions, container, survey, level, prefix) {
               questionId
             );
             saveSurveysToStorage();
+            saveMetrik(questionId);
           });
           const label = document.createElement("label");
           label.htmlFor = radio.id;

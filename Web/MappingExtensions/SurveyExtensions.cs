@@ -32,7 +32,7 @@ public static class SurveyExtensions
 
     public static AnsweredSurvey FromRequest(this Response.AnsweredSurvey answeredSurvey)
     {
-        return new AnsweredSurvey(answeredSurvey.AnsweredQuestions.Select(t => t.FromRequest()).ToArray());
+        return new AnsweredSurvey(answeredSurvey.answeredQuestions.Select(t => t.FromRequest()).ToArray());
     }
 
     private static AnsweredQuestionView FromRequest(this Response.AnsweredQuestion answeredQuestion)
@@ -43,7 +43,7 @@ public static class SurveyExtensions
                 .ToDictionary(
                     t => t.Key,
                     t => t.Value.Select(t2 => t2.FromRequest()).ToArray()),
-            answeredQuestion.QuestionType.FromRequest(),
+            answeredQuestion.questionType.FromRequest(),
             answeredQuestion.QuestionAnswer);
     }
 

@@ -1,3 +1,3 @@
 namespace Web.Dto.Response;
 
-public record AnsweredSurvey(Guid FileId, AnsweredQuestion[] AnsweredQuestions);
+public record AnsweredSurvey(Guid fileId, AnsweredQuestion[] answeredQuestions);
