@@ -40,8 +40,8 @@ function loadLeftPanel() {
 
       document.body.classList.toggle("left-panel-collapsed", isCollapsed);
 
-      // Убрали сохранение состояния в localStorage
       updateHeaderPosition(isCollapsed);
+      updateSurveyPosition(isCollapsed);
     };
 
     const updateHeaderPosition = (isCollapsed) => {
@@ -49,7 +49,13 @@ function loadLeftPanel() {
       if (header) {
         header.style.left = isCollapsed ? '75px' : '300px';
         header.style.width = isCollapsed ? 'calc(100% - 75px)' : 'calc(100% - 300px)';
-        header.style.transition = 'all 0.3s ease';
+      }
+    };
+
+    const updateSurveyPosition = (isCollapsed) => {
+      const surveyContainer = document.querySelector('#survey-container');
+      if (surveyContainer) {
+        surveyContainer.style.margin = isCollapsed ? '80px 15px 15px 75px' : '80px 15px 15px 300px';
       }
     };
 
@@ -58,8 +64,7 @@ function loadLeftPanel() {
       updatePanelState(!currentState);
     });
 
-    // Всегда инициализируем с открытым состоянием
-    updatePanelState(false); // false = панель открыта
+    updatePanelState(false);
   }
 
   setupUploadButtons();

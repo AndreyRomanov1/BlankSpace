@@ -4,10 +4,12 @@ body {
   background-size: cover;
   font-family: Inter, sans-serif;
 }
+
 #survey-container {
-  margin: 80px 15px 15px 200px;
+  margin: 80px 15px 15px 300px;
   overflow-y: auto;
-  height: 89vh;
+  height: calc(100vh - 100px);
+  transition: all 0.3s ease;
 }/* оставляем место для фиксированного хедера */
 .question-block {
   display: flex;
