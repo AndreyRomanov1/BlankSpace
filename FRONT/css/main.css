@@ -8,7 +8,7 @@ body {
 #survey-container {
   margin: 80px 15px 15px 300px;
   overflow-y: auto;
-  height: calc(100vh - 100px);
+  height: calc(100vh - 95px);
   transition: all 0.3s ease;
 }/* оставляем место для фиксированного хедера */
 .question-block {
@@ -133,3 +133,8 @@ input[type="radio"] {
   accent-color: #3D69B8;
 }
 
+#submitBtn:disabled {
+  background-color: #1ac14c;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
