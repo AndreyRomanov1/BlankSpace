@@ -2,10 +2,8 @@ let isDocumentLoaded = false;
 
 window.addEventListener('load', function() {
   isDocumentLoaded = true;
-  setTimeout(openModal);
-  updateSubmitButtonState();
-window.addEventListener("load", function () {
   setTimeout(openModal, 100);
+  updateSubmitButtonState();
 });
 
 function updateSubmitButtonState() {
@@ -268,261 +266,202 @@ function convertFlatAnswers(flatAnswers) {
   return nestedAnswers;
 }
 
-async function finalizeCurrentSurvey() {
-  const survey = SURVEYS.find((s) => s.id === currentSurveyId);
-  if (!survey) return;
-  const incomplete = checkSurveyCompletionMain(survey);
-  if (incomplete.length > 0) {
-    alert("Ответьте на все вопросы main");
-    return;
-  }
-
-  // alert("Ответы в выводе на консоль");
-
-  const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
-
-  console.log(GUID);
-
-  const readableStream = (
-      await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)
-  ).body;
-
-  const file = URL.createObjectURL(await new Response(readableStream).blob());
-
-  const link = document.createElement("a");
-  link.href = file;
-  link.download = currentSurveyName;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-}
-
-async function submitSurvey(frontendResults, fileId) {
-  const backendData = createSurveyResult(frontendResults, fileId);
-
-  try {
-    const response = await fetch(`${baseApiUrl}/Survey`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-      );
+  async function finalizeCurrentSurvey() {
+    const survey = SURVEYS.find((s) => s.id === currentSurveyId);
+    if (!survey) return;
+    const incomplete = checkSurveyCompletionMain(survey);
+    if (incomplete.length > 0) {
+      alert("Ответьте на все вопросы main");
+      return;
     }
 
-    return await response.json();
-  } catch (error) {
-    console.error("Ошибка при отправке опроса:", {
-      error: error.message,
-      requestPayload: backendData,
-    });
-    throw error;
-  }
-}
-
-function createSurveyResult(flatAnswers, fileId) {
-  const currentSurvey = SURVEYS.find((s) => s.id === currentSurveyId);
-
-  if (!currentSurvey || !currentSurvey.json || !currentSurvey.json.questions) {
-    console.error("Не удалось найти текущий опрос или его структуру вопросов.");
-    return null;
-  }
-
-  const originalQuestions = currentSurvey.json.questions;
-
-  const mapQuestionTypeToString = (typeNumber) => {
-    if (typeNumber === 0) return 0;
-    if (typeNumber === 1) return 1;
-    console.warn("Обнаружен неизвестный числовой тип вопроса:", typeNumber);
-
-    return null;
-  };
-
-  function processQuestionsRecursive(questions, prefix, isPathActive) {
-    if (!questions || questions.length === 0) {
-      return [];
-    }
-
-    return questions.map((question, index) => {
-      const questionId = generateQuestionId(prefix, index);
-      const userAnswerForThisLevel = flatAnswers[questionId];
-      const finalAnswer = isPathActive ? userAnswerForThisLevel || null : null;
-
-      const backendQuestionType = mapQuestionTypeToString(
-          question.questionType
-      );
-
-      const processedQuestion = {
-        questionType: backendQuestionType,
-
-        name: question.name,
-        subQuestionsByAnswer: {},
-        questionAnswer: finalAnswer,
-      };
-
-      if (
-          question.questionType === 0 &&
-          question.subQuestionsByAnswer &&
-          Object.keys(question.subQuestionsByAnswer).length > 0
-      ) {
-        processedQuestion.subQuestionsByAnswer = {};
-        for (const answerOption in question.subQuestionsByAnswer) {
-          const originalSubQuestions =
-              question.subQuestionsByAnswer[answerOption] || [];
-          const isSubPathNowActive =
-              isPathActive && userAnswerForThisLevel === answerOption;
-
-          processedQuestion.subQuestionsByAnswer[answerOption] =
-              processQuestionsRecursive(
-                  originalSubQuestions,
-                  questionId,
-                  isSubPathNowActive
-              );
-        }
-      } else if (question.subQuestionsByAnswer) {
-        processedQuestion.subQuestionsByAnswer = {
-          ...question.subQuestionsByAnswer,
-        };
-      }
-
-      return processedQuestion;
-    });
-  }
-
-  const answeredQuestions = processQuestionsRecursive(
-      originalQuestions,
-      "",
-      true
-  );
-
-  return {
-    fileId: fileId,
-    answeredQuestions: answeredQuestions,
-  };
-}
-
-function checkSurveyCompletionMain(survey) {
-  const missing = [];
-  const answers = survey.answers || {};
-
-  function checkQuestions(questions, prefix = "") {
-    if (!questions || questions.length === 0) return;
-
-    questions.forEach((q, index) => {
-      const qId = generateQuestionId(prefix, index);
-
-      if (!answers.hasOwnProperty(qId)) {
-        missing.push(qId);
-      } else if (answers[qId] === "") {
-        missing.push(qId);
-      }
-
-      if (q.questionType === 0 && q.subQuestionsByAnswer) {
-        const selectedAnswer = answers[qId];
-        if (selectedAnswer && q.subQuestionsByAnswer[selectedAnswer]) {
-          checkQuestions(q.subQuestionsByAnswer[selectedAnswer], qId);
-        }
-      }
-    });
-  }
-
-  checkQuestions(survey.json.questions, "");
-  return missing;
-}
-
-async function finalizeCurrentSurvey() {
-  const survey = SURVEYS.find((s) => s.id === currentSurveyId);
-  if (!survey) return;
-
-  const incomplete = checkSurveyCompletionMain(survey);
-  if (incomplete.length > 0) {
-    alert("Пожалуйста, ответьте на все обязательные вопросы");
-    return;
-  }
-
-  try {
     const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
+
     console.log(GUID);
-  const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
 
-    const readableStream = (await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)).body;
-    const file = URL.createObjectURL(await new Response(readableStream).blob());
+    const readableStream = (
+        await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)
+    ).body;
 
-    const link = document.createElement("a");
-    link.href = file;
-    link.download = currentSurveyName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  const file = await new Response(readableStream).blob();
+    const file = await new Response(readableStream).blob();
 
-  if (window.showSaveFilePicker) {
-    try {
-      const opts = {
-        suggestedName: currentSurveyName,
-        types: [
-          {
-            description: "Документ",
-            accept: {
-              "application/octet-stream": [".docx", ".doc", ".txt"],
+    if (window.showSaveFilePicker) {
+      try {
+        const opts = {
+          suggestedName: currentSurveyName,
+          types: [
+            {
+              description: "Документ",
+              accept: {
+                "application/octet-stream": [".docx", ".doc", ".txt"],
+              },
             },
-          },
-        ],
-      };
+          ],
+        };
 
-      const fileHandle = await window.showSaveFilePicker(opts);
-      const writable = await fileHandle.createWritable();
+        const fileHandle = await window.showSaveFilePicker(opts);
+        const writable = await fileHandle.createWritable();
 
-      await writable.write(file);
+        await writable.write(file);
 
-      await writable.close();
+        await writable.close();
 
-      console.log("Файл сохранён пользователем.");
-    } catch (err) {
-      console.error("Ошибка или отмена сохранения:", err);
-    }
-  } else {
-    const fileURL = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = fileURL;
-    link.download = currentSurveyName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    alert(
-      "Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка."
-    );
-  }
-}
-
-async function submitSurvey(frontendResults, fileId) {
-  const backendData = createSurveyResult(frontendResults, fileId);
-
-  try {
-    const response = await fetch(`${baseApiUrl}/Survey`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || `HTTP error! status: ${response.status}`
+        console.log("Файл сохранён пользователем.");
+      } catch (err) {
+        console.error("Ошибка или отмена сохранения:", err);
+      }
+    } else {
+      const fileURL = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = fileURL;
+      link.download = currentSurveyName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      alert(
+          "Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка."
       );
     }
-
-    return await response.json();
-  } catch (error) {
-    console.error("Ошибка при отправке опроса:", error);
-    alert("Произошла ошибка при отправке опроса");
   }
+
+  async function submitSurvey(frontendResults, fileId) {
+    const backendData = createSurveyResult(frontendResults, fileId);
+
+    try {
+      const response = await fetch(`${baseApiUrl}/Survey`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(backendData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(
+            errorData.message || `HTTP error! status: ${response.status}`
+        );
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("Ошибка при отправке опроса:", {
+        error: error.message,
+        requestPayload: backendData,
+      });
+      throw error;
+    }
+  }
+
+  function createSurveyResult(flatAnswers, fileId) {
+    const currentSurvey = SURVEYS.find((s) => s.id === currentSurveyId);
+
+    if (!currentSurvey || !currentSurvey.json || !currentSurvey.json.questions) {
+      console.error("Не удалось найти текущий опрос или его структуру вопросов.");
+      return null;
+    }
+
+    const originalQuestions = currentSurvey.json.questions;
+
+    const mapQuestionTypeToString = (typeNumber) => {
+      if (typeNumber === 0) return 0;
+      if (typeNumber === 1) return 1;
+      console.warn("Обнаружен неизвестный числовой тип вопроса:", typeNumber);
+
+      return null;
+    };
+
+    function processQuestionsRecursive(questions, prefix, isPathActive) {
+      if (!questions || questions.length === 0) {
+        return [];
+      }
+
+      return questions.map((question, index) => {
+        const questionId = generateQuestionId(prefix, index);
+        const userAnswerForThisLevel = flatAnswers[questionId];
+        const finalAnswer = isPathActive ? userAnswerForThisLevel || null : null;
+
+        const backendQuestionType = mapQuestionTypeToString(
+            question.questionType
+        );
+
+        const processedQuestion = {
+          questionType: backendQuestionType,
+
+          name: question.name,
+          subQuestionsByAnswer: {},
+          questionAnswer: finalAnswer,
+        };
+
+        if (
+            question.questionType === 0 &&
+            question.subQuestionsByAnswer &&
+            Object.keys(question.subQuestionsByAnswer).length > 0
+        ) {
+          processedQuestion.subQuestionsByAnswer = {};
+          for (const answerOption in question.subQuestionsByAnswer) {
+            const originalSubQuestions =
+                question.subQuestionsByAnswer[answerOption] || [];
+            const isSubPathNowActive =
+                isPathActive && userAnswerForThisLevel === answerOption;
+
+            processedQuestion.subQuestionsByAnswer[answerOption] =
+                processQuestionsRecursive(
+                    originalSubQuestions,
+                    questionId,
+                    isSubPathNowActive
+                );
+          }
+        } else if (question.subQuestionsByAnswer) {
+          processedQuestion.subQuestionsByAnswer = {
+            ...question.subQuestionsByAnswer,
+          };
+        }
+
+        return processedQuestion;
+      });
+    }
+
+    const answeredQuestions = processQuestionsRecursive(
+        originalQuestions,
+        "",
+        true
+    );
+
+    return {
+      fileId: fileId,
+      answeredQuestions: answeredQuestions,
+    };
+  }
+
+  function checkSurveyCompletionMain(survey) {
+    const missing = [];
+    const answers = survey.answers || {};
+
+    function checkQuestions(questions, prefix = "") {
+      if (!questions || questions.length === 0) {
+        return;
+      }
+
+      questions.forEach((q, index) => {
+        const qId = generateQuestionId(prefix, index);
+
+        if (!answers[qId] || answers[qId] === "") {
+          missing.push(qId);
+        }
+
+        if (
+            q.questionType === 0 &&
+            answers[qId] &&
+            q.subQuestionsByAnswer &&
+            q.subQuestionsByAnswer[answers[qId]]
+        ) {
+          checkQuestions(q.subQuestionsByAnswer[answers[qId]], qId);
+        }
+      });
+    }
+
+    checkQuestions(survey.json.questions, "");
+
+    return missing;
 }
