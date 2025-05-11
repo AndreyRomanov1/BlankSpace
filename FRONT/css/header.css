@@ -7,6 +7,7 @@
   left: 300px;
   width: calc(100% - 300px);
   z-index: 1000;
+  transition: all 0.3s ease;
 }
 .header__container {
   display: flex;
