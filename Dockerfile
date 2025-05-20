@@ -10,6 +10,7 @@ COPY ["Web/Web.csproj", "Web/"]
 COPY ["DAL/DAL.csproj", "DAL/"]
 COPY ["Domain/Domain.csproj", "Domain/"]
 COPY ["Infrastructure/Infrastructure.csproj", "Infrastructure/"]
+COPY ["FRONT/", "/app/FRONT/"]
 RUN dotnet restore "Web/Web.csproj"
 COPY . .
 WORKDIR "/src/Web"
