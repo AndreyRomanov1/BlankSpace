@@ -25,7 +25,16 @@ public class SurveyController(
         {
             var survey = surveyService.GetSurveyByDocx(fileId);
             var response = survey.ToResponse();
-            SaveGetSurveyMetrics(response, fileId);
+            try
+            {
+                SaveGetSurveyMetrics(response, fileId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Не удалось сохранить метрики: {e}");
+                throw;
+            }
+
             return Task.FromResult<ActionResult<ResponseDto.Survey>>(response);
         }
         catch (NotFoundException ex)
@@ -58,7 +67,16 @@ public class SurveyController(
         ResponseDto.AnsweredSurvey answeredSurvey)
     {
         Console.WriteLine("\n\n\n--------------------------------------");
-        SaveInsertSurveyAnswerToDocumentMetrics(answeredSurvey);
+        try
+        {
+            SaveInsertSurveyAnswerToDocumentMetrics(answeredSurvey);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"Не удалось сохранить метрики: {e}");
+            throw;
+        }
+
         var fileId = answeredSurveyService.FillDocByAnsweredSurvey(answeredSurvey.FileId, answeredSurvey.FromRequest());
         Console.WriteLine("\n\n\n--------------------------------------");
         return Task.FromResult<ActionResult<ResponseDto.InsertSurveyAnswerToDocumentResult>>(
