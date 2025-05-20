@@ -280,7 +280,7 @@ function convertFlatAnswers(flatAnswers) {
     console.log(GUID);
 
     const readableStream = (
-        await fetch(`http://localhost:5000/api/FileStorage/${GUID}`)
+        await fetch(`${baseApiUrl}/FileStorage/${GUID}`)
     ).body;
 
     const file = await new Response(readableStream).blob();
