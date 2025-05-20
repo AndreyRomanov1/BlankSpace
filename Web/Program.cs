@@ -9,8 +9,8 @@ const int port = 5000;
 var httpLocalhost = $"http://localhost:{port}";
 const string mainPage = "/index.html";
 builder.WebHost
-    .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Loopback, port))
-    .UseUrls(httpLocalhost);
+    .ConfigureKestrel(serverOptions => serverOptions.Listen(IPAddress.Any, port));
+    // .UseUrls(httpLocalhost);
 
 builder.Services.AddCors(options =>
 {
