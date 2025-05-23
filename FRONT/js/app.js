@@ -15,8 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 async function loadComponent(url, container) {
   try {
     const response = await fetch(url);
-    const html = await response.text();
-    container.innerHTML = html;
+    container.innerHTML = await response.text();
   } catch (error) {
     console.error("Ошибка загрузки компонента:", url, error);
   }
