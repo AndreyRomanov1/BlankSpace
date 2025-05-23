@@ -2,8 +2,8 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blank Space - One Page App</title>
+    <meta name="viewport" />
+    <title>Blank Space</title>
     <link rel="stylesheet" href="css/zeroingOut.css" />
     <link rel="stylesheet" href="css/header.css" />
     <link rel="stylesheet" href="css/main.css" />
@@ -12,18 +12,15 @@
   </head>
   <body>
     <div id="app">
-      <!-- Левая панель с опросами -->
       <div id="left-panel"></div>
-      <!-- Основной контент (хедер + опрос) -->
       <div id="main-content">
         <div id="header-container"></div>
         <div id="survey-container"></div>
       </div>
     </div>
-    <!-- Модальное окно для загрузки файла -->
     <div id="modal-overlay" class="modal-overlay hidden">
       <div id="modal-window" class="modal-window">
-        <span class="close-btn">&times;</span>
+        <button class="close-btn">&times;</button>
         <div id="modal-content"></div>
       </div>
     </div>
