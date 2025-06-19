@@ -131,7 +131,7 @@ function updateModal(type, error = null) {
     modalInfo.style.display = "flex";
     docTitle.textContent = currentSurveyName;
     if (error) {
-      status.textContent = "Некорректный шаблон";
+      status.textContent = `Некорректный шаблон. ${error}`;
       status.classList.add("invalid-template");
       createBtn.disabled = true;
     } else {
@@ -180,7 +180,7 @@ async function uploadFile(file) {
     );
 
     if (!surveyResponse.ok) {
-      updateModal("init", `Failed to get survey: ${surveyResponse.statusText}`);
+      updateModal("init", `${await surveyResponse.json()}`);
       return;
     }
 

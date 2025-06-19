@@ -11,7 +11,8 @@ public class BlocksService : IBlocksService
     {
         var (blocks, endIndex) = GroupTokensToBlocksByRecursively(tokens);
         if (endIndex != null)
-            throw new BadRequestException($"Условие не было завершено. Токены: {string.Join(", ", blocks.Select(t => t.ToString()))}");
+            throw new BadRequestException(
+                $"Условный блок не был завершён. Токены: {string.Join(", ", blocks.Select(t => t.ToString()))}. Проверьте корректность шаблона");
 
         return blocks;
     }
@@ -32,7 +33,8 @@ public class BlocksService : IBlocksService
                     var (childBlocks, endIfIndex) = GroupTokensToBlocksByRecursively(tokens, i + 1);
 
                     if (endIfIndex == null)
-                        throw new BadRequestException($"Условие не было завершено. Начальный токен: {string.Join(", ", ifToken.Text)}");
+                        throw new BadRequestException(
+                            $"Условный блок не был завершён. Начальный токен: {string.Join(", ", ifToken.Text)}. Проверьте корректность шаблона");
 
                     var endIfToken = (EndIfToken)tokens[endIfIndex.Value];
                     var ifBlock = new IfBlock(ifToken, endIfToken, childBlocks);

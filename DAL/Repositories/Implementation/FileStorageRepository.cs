@@ -42,7 +42,7 @@ public class FileStorageRepository : IFileStorageRepository, IDisposable
         lock (lockObj)
         {
             if (!storage.TryGetValue(fileId, out var entry))
-                throw new NotFoundException($"Not found file by fileId=<{fileId}>");
+                throw new NotFoundException($"Не найден файл на сервере по id `{fileId}`. Попробуйте загрузить шаблон ещё раз");
             return new ContentFile(entry.filename, new MemoryStream(entry.Content, false));
         }
     }

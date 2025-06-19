@@ -16,7 +16,8 @@ public partial class InputToken(Paragraph paragraph, int startIndex, int endInde
         var match = MyRegex().Match(text);
 
         if (!match.Success)
-            throw new Exception("Не удалось достать вопрос из условия");
+            throw new Exception(
+                $"Не удалось достать текст вопроса из блока для ввода. Блок: `{text}`. Проверьте корректность шаблона");
 
         var question = match.Groups[1].Value;
         return question;

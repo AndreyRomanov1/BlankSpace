@@ -94,7 +94,7 @@ public class AnsweredSurveyService(
                 break;
             }
             default:
-                throw new BadRequestException("Такой тип вопроса не поддерживается");
+                throw new BadRequestException($"Такой тип вопроса не поддерживается: {question.Type.ToString()}");
         }
     }
 
@@ -105,7 +105,7 @@ public class AnsweredSurveyService(
     {
         if (questions.Length != answeredQuestionsViews.Length)
             throw new BadRequestException(
-                "Количество вопросов в сохранённом документе и полученных ответах отличается");
+                $"Количество вопросов в сохранённом документе и полученных ответах отличается. Что-то пошло не так при заполнении опроса. Ожидалось {questions.Length}, а получено {answeredQuestionsViews.Length}");
 
         for (var i = 0; i < questions.Length; i++)
         {
@@ -115,7 +115,7 @@ public class AnsweredSurveyService(
             var questionAnsAnswerIsEqual = answeredQuestionView.CompareQuestionAndAnswer(questionView);
             if (!questionAnsAnswerIsEqual)
                 throw new BadRequestException(
-                    $"Вопрос и его ответ не совпадают: {questionView.Name} и {questionView.QuestionType}");
+                    $"Вопрос в сохранённом документе и полученном ответе отличается: {questionView.Name} и {questionView.QuestionType}");
             switch (question)
             {
                 case IfQuestion ifQuestion:
@@ -125,13 +125,13 @@ public class AnsweredSurveyService(
                     {
                         if (selectedAnswer != null)
                             throw new BadRequestException(
-                                $"Если подвопрос {ifQuestion.Name} не выбран в родителе, то ответ должен быть null. Получено: <{selectedAnswer}>");
+                                $"Если подвопрос {ifQuestion.Name} не выбран в родителе, то ответ должен быть null. Получено: `{selectedAnswer}`");
                     }
                     else
                     {
                         if (selectedAnswer == null)
                             throw new BadRequestException(
-                                $"Если подвопрос {ifQuestion.Name} выбран в родителе, то ответ  не должен быть null. Получено: <{selectedAnswer}>");
+                                $"Если подвопрос {ifQuestion.Name} выбран в родителе, то ответ  не должен быть null. Получено: `{selectedAnswer}`");
 
                         if (!ifQuestion.Answers.TryGetValue(selectedAnswer, out var answer))
                             throw new BadRequestException(
@@ -162,7 +162,7 @@ public class AnsweredSurveyService(
                     {
                         if (enteredValue != null)
                             throw new BadRequestException(
-                                $"Если подвопрос {inputQuestion.Name} не выбран в родителе, то ответ должен быть null. Получено: <{enteredValue}>");
+                                $"Если подвопрос {inputQuestion.Name} не выбран в родителе, то ответ должен быть null. Получено: `{enteredValue}`");
                     }
                     else
                     {
@@ -173,7 +173,7 @@ public class AnsweredSurveyService(
                     break;
                 }
                 default:
-                    throw new BadRequestException("Такой тип вопроса не поддерживается");
+                    throw new BadRequestException($"Такой тип вопроса не поддерживается: {question.Type.ToString()}");
             }
         }
     }

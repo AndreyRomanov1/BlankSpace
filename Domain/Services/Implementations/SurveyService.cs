@@ -17,7 +17,7 @@ public class SurveyService(
     {
         var contentFile = fileStorageRepository.GetFile(fileId);
         if (!Path.GetExtension(contentFile.Name).Equals(".docx", StringComparison.CurrentCultureIgnoreCase))
-            throw new BadRequestException("Invalid file format. Only DOCX allowed");
+            throw new BadRequestException("Некорректный формат файла. Поддерживается только DOCX!");
         using var doc = DocX.Load(contentFile.Stream);
         var tokens = tokenParsingService.FindTokens(doc);
         var blocks = blocksService.GroupTokensToBlocks(tokens);

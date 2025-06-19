@@ -18,7 +18,8 @@ public partial class IfToken(Paragraph paragraph, int startIndex, int endIndex, 
         var match = MyRegex().Match(text);
 
         if (!match.Success)
-            throw new Exception("Не удалось достать вопрос из условия");
+            throw new Exception(
+                $"Не удалось достать текст вопроса из условного блока. Блок: `{text}`. Проверьте корректность шаблона");
 
         var question = match.Groups[1].Value;
         return question;
@@ -29,7 +30,8 @@ public partial class IfToken(Paragraph paragraph, int startIndex, int endIndex, 
         var match = MyRegex().Match(text);
 
         if (!match.Success)
-            throw new Exception("Не удалось достать ответ из условия");
+            throw new Exception(
+                $"Не удалось достать текст ответа из условного блока. Блок: `{text}`. Проверьте корректность шаблона");
 
         var answer = match.Groups[2].Value;
         return answer;
