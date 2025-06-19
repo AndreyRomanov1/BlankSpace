@@ -21,9 +21,16 @@ function saveSurveysToStorage() {
   localStorage.setItem("surveys", JSON.stringify(SURVEYS));
 }
 
+function clearSurveyPlace() {
+  const container = document.getElementById("survey-container");
+  container.innerHTML = "";
+}
+
 function changeSurveyHeaderName() {
   const surveNameHolder = document.querySelector(".nameFile");
-  if (currentSurveyName.length != 0) {
-    surveNameHolder.textContent = currentSurveyName.slice(0, -5);
+  if (currentSurveyName.length > 5) {
+    surveNameHolder.textContent = `${currentSurveyName.slice(0, 5)}...`;
+  } else {
+    surveNameHolder.textContent = currentSurveyName;
   }
 }

@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("header-container")
   );
   loadLeftPanel();
+  loadSurveyMenu();
 
   if (currentSurveyId) {
     loadSurvey(currentSurveyId);

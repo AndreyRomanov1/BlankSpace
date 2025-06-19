@@ -1,11 +1,111 @@
 function setupUploadButtons() {
   const uploadButtons = document.querySelectorAll(".upload");
 
-  uploadButtons.forEach(button => {
+  uploadButtons.forEach((button) => {
     button.addEventListener("click", (e) => {
       e.stopPropagation();
       openModal();
     });
+  });
+}
+
+function createSurveyTitile(survey) {
+  const span = document.createElement("span");
+  span.textContent = `${survey.name || "Новый опрос"}`;
+  return span;
+}
+
+function createSurveyMenu(survey) {
+  const menu = document.createElement("div");
+  const menuIcon = document.createElement("img");
+  menuIcon.src = "../images/surveyMenuImg.svg";
+  menu.append(menuIcon);
+
+  const menuList = document.querySelector(".survey-item__menu-list");
+
+  menu.addEventListener("click", () => {
+    menuList.style.left = `${menu.getBoundingClientRect().x}px`;
+    menuList.style.top = `${menu.getBoundingClientRect().y}px`;
+    menuList.dataset.surveyId = survey.id;
+    menuList.classList.toggle("hide");
+  });
+  menu.classList.add("survey-item__menu");
+  menuList.classList.add("hide");
+
+  return menu;
+}
+
+function loadSurveyMenu() {
+  const menuList = document.querySelector(".survey-item__menu-list");
+  const menuListItems = document.querySelectorAll(".survey-item__menu-list li");
+  const renameSurvey = menuListItems[0];
+  const deleteSurvey = menuListItems[1];
+
+  document.addEventListener("keydown", function (event) {
+    const currentSurvey = document.querySelector(
+      `.survey-item[data-survey-id='${menuList.dataset.surveyId}']`
+    );
+    if (!currentSurvey) return;
+    const surveyTitle = currentSurvey.querySelector("span");
+    if (event.key === "Enter") {
+      if (surveyTitle.contentEditable) {
+        surveyTitle.contentEditable = false;
+        for (let survey of SURVEYS) {
+          if (survey.id == menuList.dataset.surveyId) {
+            survey.name = surveyTitle.textContent;
+            currentSurveyName = surveyTitle.textContent;
+          }
+        }
+        changeSurveyHeaderName();
+      }
+    }
+  });
+
+  // document.addEventListener("click", (e) => {
+  //   const currentSurvey = document.querySelector(
+  //     `.survey-item[data-survey-id='${menuList.dataset.surveyId}']`
+  //   );
+  //   if (!currentSurvey) return;
+  //   const surveyTitle = currentSurvey.querySelector("span");
+  //   if (![...e.target.classList].includes("survey-item")) {
+  //     if (surveyTitle.contentEditable) {
+  //       surveyTitle.contentEditable = false;
+  //       for (let survey of SURVEYS) {
+  //         if (survey.id == menuList.dataset.surveyId) {
+  //           survey.name = surveyTitle.textContent;
+  //         }
+  //       }
+  //       changeSurveyHeaderName();
+  //     }
+  //   }
+  // });
+
+  renameSurvey.addEventListener("click", () => {
+    const currentSurvey = document.querySelector(
+      `.survey-item[data-survey-id='${menuList.dataset.surveyId}']`
+    );
+    const surveyTitle = currentSurvey.querySelector("span");
+    surveyTitle.contentEditable = true;
+    surveyTitle.focus();
+    menuList.classList.toggle("hide");
+  });
+
+  deleteSurvey.addEventListener("click", () => {
+    SURVEYS = SURVEYS.filter(
+      (survey) => survey.id != menuList.dataset.surveyId
+    );
+    currentSurveyId = null;
+    currentSurveyName = "";
+    surveyData = null;
+    FILE = null;
+
+    saveSurveysToStorage();
+    loadLeftPanel();
+    clearSurveyPlace();
+    changeSurveyHeaderName();
+    updateSubmitButtonState();
+
+    menuList.classList.toggle("hide");
   });
 }
 
@@ -31,12 +131,12 @@ function loadLeftPanel() {
 
   const toggleBtn = document.querySelector(".panel-toggle");
   if (toggleBtn) {
-    const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+    const toggleIcon = toggleBtn.querySelector(".toggle-icon");
 
     const updatePanelState = (isCollapsed) => {
       toggleIcon.src = isCollapsed
-          ? "../images/toggleRightIcon.png"
-          : "../images/toggleLeftIcon.png";
+        ? "../images/toggleRightIcon.png"
+        : "../images/toggleLeftIcon.png";
 
       document.body.classList.toggle("left-panel-collapsed", isCollapsed);
 
@@ -45,22 +145,28 @@ function loadLeftPanel() {
     };
 
     const updateHeaderPosition = (isCollapsed) => {
-      const header = document.querySelector('.header');
+      const header = document.querySelector(".header");
       if (header) {
-        header.style.left = isCollapsed ? '75px' : '300px';
-        header.style.width = isCollapsed ? 'calc(100% - 75px)' : 'calc(100% - 300px)';
+        header.style.left = isCollapsed ? "75px" : "300px";
+        header.style.width = isCollapsed
+          ? "calc(100% - 75px)"
+          : "calc(100% - 300px)";
       }
     };
 
     const updateSurveyPosition = (isCollapsed) => {
-      const surveyContainer = document.querySelector('#survey-container');
+      const surveyContainer = document.querySelector("#survey-container");
       if (surveyContainer) {
-        surveyContainer.style.margin = isCollapsed ? '80px 15px 15px 75px' : '80px 15px 15px 300px';
+        surveyContainer.style.margin = isCollapsed
+          ? "80px 15px 15px 75px"
+          : "80px 15px 15px 300px";
       }
     };
 
     toggleBtn.addEventListener("click", () => {
-      const currentState = document.body.classList.contains("left-panel-collapsed");
+      const currentState = document.body.classList.contains(
+        "left-panel-collapsed"
+      );
       updatePanelState(!currentState);
     });
 
@@ -71,18 +177,20 @@ function loadLeftPanel() {
 
   const surveyList = document.getElementById("survey-list");
   SURVEYS.forEach((survey) => {
-    const item = document.createElement("div");
-    item.className = "survey-item";
-    item.dataset.surveyId = survey.id;
-    item.innerHTML = `
-        <span>${survey.name || "Новый опрос"}</span>
-      `;
-    item.addEventListener("click", () => {
+    const surveyElem = document.createElement("div");
+    surveyElem.className = "survey-item";
+    surveyElem.dataset.surveyId = survey.id;
+    const surveyTitle = createSurveyTitile(survey);
+    const surveyMenu = createSurveyMenu(survey);
+    surveyElem.append(surveyTitle);
+    surveyElem.append(surveyMenu);
+    surveyElem.addEventListener("click", () => {
+      console.log(survey.name);
       currentSurveyName = survey.name;
       changeSurveyHeaderName();
       loadSurvey(survey.id);
     });
-    surveyList.appendChild(item);
+    surveyList.appendChild(surveyElem);
   });
 }
 
