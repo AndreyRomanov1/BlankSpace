@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   loadSurveysFromStorage();
 
-
-  const header= document.getElementById("header-container")
-  header.innerHTML = `
+  document.getElementById("header-container").innerHTML = `
     <header class="header">
       <div class="header__container">
         <h1 class="nameFile"></h1>
@@ -13,7 +11,6 @@ document.addEventListener("DOMContentLoaded", () => {
   `;
 
   loadLeftPanel();
-  loadSurveyMenu();
 
   if (currentSurveyId) {
     loadSurvey(currentSurveyId);

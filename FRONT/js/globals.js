@@ -1,9 +1,9 @@
 let SURVEYS = [];
 let currentSurveyId = null;
 let currentSurveyName = "";
-var surveyData = null;
-var FILE = null;
-var baseApiUrl;
+let surveyData = null;
+let FILE = null;
+let baseApiUrl;
 fetch("config.json")
   .then((r) => r.json())
   .then((r) => {
@@ -29,7 +29,7 @@ function clearSurveyPlace() {
 function changeSurveyHeaderName() {
   const surveNameHolder = document.querySelector(".nameFile");
   if (currentSurveyName.length > 5) {
-    surveNameHolder.textContent = `${currentSurveyName.slice(0, 5)}...`;
+    surveNameHolder.textContent = `${currentSurveyName.slice(0, -5)}`;
   } else {
     surveNameHolder.textContent = currentSurveyName;
   }
