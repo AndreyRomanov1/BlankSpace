@@ -134,6 +134,10 @@ function loadLeftPanel() {
     const toggleIcon = toggleBtn.querySelector(".toggle-icon");
 
     const updatePanelState = (isCollapsed) => {
+      const menuList = document.querySelector(".survey-item__menu-list");
+      if (isCollapsed) {
+        menuList.classList.add("hide");
+      }
       toggleIcon.src = isCollapsed
         ? "../images/toggleRightIcon.png"
         : "../images/toggleLeftIcon.png";
@@ -142,24 +146,58 @@ function loadLeftPanel() {
 
       updateHeaderPosition(isCollapsed);
       updateSurveyPosition(isCollapsed);
+
+      if (window.innerWidth <= 768) {
+        if (isCollapsed) leftPanel.style.border = "none";
+        else leftPanel.style.borderRight = "4px solid white";
+      }
+
+      const debounce = (func, delay) => {
+        let timeoutId;
+        return function (...args) {
+          clearTimeout(timeoutId);
+          timeoutId = setTimeout(() => func.apply(this, args), delay);
+        };
+      };
+
+      window.addEventListener(
+        "resize",
+        debounce(() => {
+          const isCollapsed = document.body.classList.contains(
+            "left-panel-collapsed"
+          );
+          updatePanelState(isCollapsed);
+        }, 1000)
+      );
     };
 
     const updateHeaderPosition = (isCollapsed) => {
       const header = document.querySelector(".header");
       if (header) {
-        header.style.left = isCollapsed ? "75px" : "300px";
-        header.style.width = isCollapsed
-          ? "calc(100% - 75px)"
-          : "calc(100% - 300px)";
+        if (window.innerWidth <= 768) {
+          header.style.left = isCollapsed ? "125px" : "200px";
+          header.style.width = isCollapsed
+            ? "calc(100% - 125px)"
+            : "calc(100% - 200px)";
+        } else {
+          header.style.left = isCollapsed ? "75px" : "300px";
+          header.style.width = isCollapsed
+            ? "calc(100% - 75px)"
+            : "calc(100% - 300px)";
+        }
       }
     };
 
     const updateSurveyPosition = (isCollapsed) => {
       const surveyContainer = document.querySelector("#survey-container");
       if (surveyContainer) {
-        surveyContainer.style.margin = isCollapsed
-          ? "80px 15px 15px 75px"
-          : "80px 15px 15px 300px";
+        if (window.innerWidth <= 768) {
+          surveyContainer.style.margin = "80px 15px 15px 0px";
+        } else {
+          surveyContainer.style.margin = isCollapsed
+            ? "80px 15px 15px 75px"
+            : "80px 15px 15px 300px";
+        }
       }
     };
 

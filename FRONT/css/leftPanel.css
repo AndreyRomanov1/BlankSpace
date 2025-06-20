@@ -104,6 +104,7 @@
 
 .left-panel-header {
   display: flex;
+  align-items: end;
   flex-direction: row;
   font-size: 23px;
   font-weight: bold;
@@ -205,4 +206,46 @@ body.left-panel-collapsed #left-panel .collapsed-upload-container {
 
 .hide {
   display: none;
+}
+
+@media (max-width: 768px) {
+  body.left-panel-collapsed #left-panel .upload:not(.collapsed-upload) {
+    display: flex;
+  }
+
+  body.left-panel-collapsed #left-panel .collapsed-upload-container {
+    display: none;
+  }
+
+  body.left-panel-collapsed #left-panel {
+    width: 125px;
+    height: 60px;
+  }
+
+  .upload,
+  .collapsed-upload,
+  .panel-toggle {
+    min-width: 35px;
+    height: 35px;
+    font-size: 25px;
+    border-radius: 5px;
+  }
+
+  .left-panel-icon {
+    width: 25px;
+  }
+
+  #left-panel {
+    width: 200px;
+  }
+
+  .text-opros,
+  .nameFile {
+    font-size: 20px;
+  }
+
+  .text-opros,
+  .upload {
+    margin-left: 20px;
+  }
 }

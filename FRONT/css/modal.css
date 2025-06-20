@@ -15,6 +15,7 @@
   border-radius: 10px;
   width: 900px;
   padding: 20px;
+  margin: 0 10px;
   position: relative;
 }
 .modal-window .close-btn {
@@ -34,7 +35,7 @@
   border-radius: 10px;
   background-color: #a8accc;
   text-align: center;
-  padding-top: 90px;
+  padding: 90px 2px 0 2px;
   cursor: pointer;
   margin: 20px 0 20px 0;
 }

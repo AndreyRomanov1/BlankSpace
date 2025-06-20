@@ -48,3 +48,9 @@
   background-color: #00dd09;
 }
 
+@media (max-width: 768px) {
+  .header {
+    width: calc(100% - 200px);
+    left: 200px;
+  }
+}

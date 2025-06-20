@@ -1,5 +1,5 @@
 body {
-  background: linear-gradient(180deg, #0B3276 0% , #024CB7 100%);
+  background: linear-gradient(180deg, #0b3276 0%, #024cb7 100%);
   margin: 0;
   background-size: cover;
   font-family: Inter, sans-serif;
@@ -10,7 +10,7 @@ body {
   overflow-y: auto;
   height: calc(100vh - 95px);
   transition: all 0.3s ease;
-}/* оставляем место для фиксированного хедера */
+} /* оставляем место для фиксированного хедера */
 .question-block {
   display: flex;
   flex-direction: column;
@@ -116,7 +116,7 @@ hr.subquestion-separator {
 
 ::-webkit-scrollbar {
   width: 20px;
-  background: linear-gradient(180deg, #0B3276 0% , #024CB7 100%);
+  background: linear-gradient(180deg, #0b3276 0%, #024cb7 100%);
 }
 
 ::-webkit-scrollbar-track {
@@ -130,7 +130,7 @@ hr.subquestion-separator {
 }
 
 input[type="radio"] {
-  accent-color: #3D69B8;
+  accent-color: #3d69b8;
 }
 
 #submitBtn:disabled {
