@@ -72,6 +72,7 @@
 .survey-item:hover {
   background-color: #eaeaea;
 }
+
 .survey-item.active {
   background-color: rgb(170, 181, 223, 0.4);
 }
@@ -90,14 +91,17 @@
   border-radius: 5px;
   cursor: pointer;
 }
+
 .survey-actions .edit-btn {
   background-color: #1ac14c;
   color: white;
 }
+
 .survey-actions .done-btn {
   background-color: #013183;
   color: white;
 }
+
 .survey-actions .done-btn:hover {
   background-color: #367bf3;
 }
@@ -185,7 +189,6 @@ body.left-panel-collapsed #left-panel {
   width: 75px;
 }
 
-/* Стили для содержимого панели */
 body.left-panel-collapsed #left-panel .text-opros,
 body.left-panel-collapsed #left-panel .upload:not(.collapsed-upload),
 body.left-panel-collapsed #left-panel #survey-list {

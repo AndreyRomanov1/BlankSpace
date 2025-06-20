@@ -61,24 +61,6 @@ function loadSurveyMenu() {
     }
   });
 
-  // document.addEventListener("click", (e) => {
-  //   const currentSurvey = document.querySelector(
-  //     `.survey-item[data-survey-id='${menuList.dataset.surveyId}']`
-  //   );
-  //   if (!currentSurvey) return;
-  //   const surveyTitle = currentSurvey.querySelector("span");
-  //   if (![...e.target.classList].includes("survey-item")) {
-  //     if (surveyTitle.contentEditable) {
-  //       surveyTitle.contentEditable = false;
-  //       for (let survey of SURVEYS) {
-  //         if (survey.id == menuList.dataset.surveyId) {
-  //           survey.name = surveyTitle.textContent;
-  //         }
-  //       }
-  //       changeSurveyHeaderName();
-  //     }
-  //   }
-  // });
 
   renameSurvey.addEventListener("click", () => {
     const currentSurvey = document.querySelector(

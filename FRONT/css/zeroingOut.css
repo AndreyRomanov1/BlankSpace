@@ -1,4 +1,3 @@
-/*-------ОБНУЛЕНИЕ СТИЛЕЙ------------------------------*/
 *,
 *::before,
 *::after {
@@ -7,17 +6,21 @@
   border: 0;
   box-sizing: border-box;
 }
+
 a {
   text-decoration: none;
 }
+
 ul,
 ol,
 li {
   list-style: none;
 }
+
 img {
   vertical-align: top;
 }
+
 h1,
 h2,
 h3,
@@ -27,6 +30,7 @@ h6 {
   font-size: inherit;
   font-weight: inherit;
 }
+
 html,
 body {
   line-height: 1;
@@ -35,7 +39,6 @@ body {
   overflow: hidden
 }
 
-/*----контейнер-----------------------------------------*/
 [class*="__container"] {
   max-width: 1000px;
   margin: 0 auto;

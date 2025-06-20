@@ -10,7 +10,8 @@ body {
   overflow-y: auto;
   height: calc(100vh - 95px);
   transition: all 0.3s ease;
-} /* оставляем место для фиксированного хедера */
+}
+
 .question-block {
   display: flex;
   flex-direction: column;
@@ -21,6 +22,7 @@ body {
   margin: 0 auto 20px auto;
   color: white;
 }
+
 .question-block h3 {
   font-size: 18px;
   margin-bottom: 15px;
@@ -38,23 +40,27 @@ body {
 .answer-container {
   margin-bottom: 10px;
 }
+
 .answer-option {
   margin-bottom: 8px;
   display: flex;
   align-items: center;
   cursor: pointer;
 }
+
 .answer-option input[type="radio"] {
   margin-right: 8px;
   cursor: pointer;
   width: 16px;
   height: 16px;
 }
+
 .answer-option label {
   font-size: 16px;
   color: #fff;
   cursor: pointer;
 }
+
 .answer-input {
   padding: 10px 12px;
   background: #fdfdfd;
@@ -65,37 +71,23 @@ body {
   box-sizing: border-box;
   font-size: 16px;
 }
+
 .answer-input:focus {
   border-color: #000;
   outline: none;
 }
+
 .subquestion-container {
   padding-bottom: 10px;
 }
+
 hr.subquestion-separator {
   border: none;
   border-top: 5px solid #fff;
   margin: 15px 0;
   border-radius: 3px;
 }
-/*#submitBtn {*/
-/*  margin: 30px auto;*/
-/*  padding: 12px 30px;*/
-/*  background: #1ac14c;*/
-/*  color: white;*/
-/*  border: none;*/
-/*  border-radius: 8px;*/
-/*  cursor: pointer;*/
-/*  font-size: 16px;*/
-/*  transition: background 0.3s;*/
-/*  display: block;*/
-/*}*/
-/*#submitBtn:hover {*/
-/*  background: #00dd09;*/
-/*}*/
-/*#submitBtn:active {*/
-/*  background: #388e3c;*/
-/*}*/
+
 #contractOutput {
   position: relative;
   white-space: pre-wrap;
