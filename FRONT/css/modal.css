@@ -136,3 +136,7 @@
   cursor: not-allowed;
   background-color: #cccccc;
 }
+
+#fileInput {
+  display: none
+}

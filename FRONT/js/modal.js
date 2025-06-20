@@ -23,8 +23,8 @@ async function loadModalContent() {
     <div class="text_new_doc">Новый документ</div>
     <div class="load_container" id="dropZone">
       <img src="../images/loadDocument.png" alt="load document" class="img_load" />
-      <p class="text_load">Перенесите сюда файл шаблона или кликните для выбора</p>
-      <input type="file" id="fileInput" style="display: none" />
+      <p class="text_load">Перенесите сюда или кликните для выбора файла шаблона в формате .docx</p>
+      <input type="file" id="fileInput"/>
     </div>
     
     <div class="modal__info info load_container">
