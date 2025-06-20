@@ -1,81 +1,79 @@
+const modalOverlay = document.getElementById("modal-overlay");
+const modalContent = document.getElementById("modal-content");
+
 function openModal() {
-  const modalOverlay = document.getElementById("modal-overlay");
   loadModalContent();
   modalOverlay.classList.remove("hidden");
-
-  // Добавляем обработчик клика по оверлею
   modalOverlay.addEventListener('click', handleOverlayClick);
 }
 
 function closeModal() {
-  const modalOverlay = document.getElementById("modal-overlay");
   modalOverlay.classList.add("hidden");
-
-  // Удаляем обработчик при закрытии
   modalOverlay.removeEventListener('click', handleOverlayClick);
 }
 
-// Новая функция для обработки клика по оверлею
 function handleOverlayClick(e) {
-  const modalContent = document.getElementById("modal-content");
-
-  // Проверяем, был ли клик вне модального контента
   if (!modalContent.contains(e.target)) {
     closeModal();
   }
 }
 
 async function loadModalContent() {
-  const modalContent = document.getElementById("modal-content");
-  try {
-    const response = await fetch("components/modal.html");
-    const html = await response.text();
-    modalContent.innerHTML = html;
-    initModalEvents();
-  } catch (error) {
-    console.error("Ошибка загрузки модального окна:", error);
-  }
+  modalContent.innerHTML = `
+    <div class="text_new_doc">Новый документ</div>
+    <div class="load_container" id="dropZone">
+      <img src="../images/loadDocument.png" alt="load document" class="img_load" />
+      <p class="text_load">Перенесите сюда файл шаблона или кликните для выбора</p>
+      <input type="file" id="fileInput" style="display: none" />
+    </div>
+    
+    <div class="modal__info info load_container">
+      <div class="info__title">
+        Загружен документ:
+        <div class="info__title-doc"></div>
+      </div>
+      <div class="info__status"></div>
+    </div>
+    
+    <div class="modal__btns">
+      <button class="reset-btn modal__btn">Сбросить</button>
+      <button class="create-btn modal__btn">Создать</button>
+    </div>
+  `;
+
+  initModalEvents();
 }
 
 function initModalEvents() {
-  const closeBtn = document.querySelector(".close-btn");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", closeModal);
-  }
-
-  // Остальной код initModalEvents остается без изменений
-  const loadContainer = document.querySelector(".load_container");
+  const dropZone = document.querySelector("#dropZone");
   const fileInput = document.getElementById("fileInput");
+  const createBtn = document.querySelector(".create-btn");
+  const resetBtn = document.querySelector(".reset-btn");
 
-  loadContainer.addEventListener("dragover", (e) => {
+  dropZone.addEventListener("dragover", e => {
     e.preventDefault();
-    loadContainer.classList.add("drag-over");
+    dropZone.classList.add("drag-over");
   });
 
-  loadContainer.addEventListener("dragleave", () => {
-    loadContainer.classList.remove("drag-over");
+  dropZone.addEventListener("dragleave", () => {
+    dropZone.classList.remove("drag-over");
   });
 
-  loadContainer.addEventListener("drop", (e) => {
+  dropZone.addEventListener("drop", e => {
     e.preventDefault();
-    loadContainer.classList.remove("drag-over");
-    if (e.dataTransfer.files.length) {
+    dropZone.classList.remove("drag-over");
+    if (e.dataTransfer.files.length > 0) {
       handleFiles(e.dataTransfer.files);
     }
   });
 
-  loadContainer.addEventListener("click", (e) => {
-    e.stopPropagation(); // Предотвращаем закрытие при клике внутри контейнера
-    fileInput.click();
-  });
-
+  dropZone.addEventListener("click", () => fileInput.click());
   fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) {
+    if (fileInput.files.length > 0) {
       handleFiles(fileInput.files);
     }
   });
 
-  const createBtn = document.querySelector(".create-btn");
   createBtn.addEventListener("click", () => {
     if (window.uploadedFile) {
       showSurvey();
@@ -83,9 +81,7 @@ function initModalEvents() {
       alert("Выберите файл для загрузки");
     }
   });
-  createBtn.disabled = true;
 
-  const resetBtn = document.querySelector(".reset-btn");
   resetBtn.addEventListener("click", () => {
     updateModal("reset");
     createBtn.disabled = true;
@@ -96,11 +92,12 @@ function showSurvey() {
   const newSurvey = {
     id: "survey-" + Date.now(),
     fileId: currentSurveyId,
-    name: currentSurveyName.slice(0, -5),
+    name: currentSurveyName,
     json: surveyData,
     answers: {},
     originalFile: FILE,
   };
+
   SURVEYS.push(newSurvey);
   saveSurveysToStorage();
 
@@ -116,9 +113,11 @@ function updateModal(type, error = null) {
   const docTitle = document.querySelector(".info__title-doc");
   const status = document.querySelector(".info__status");
   const createBtn = document.querySelector(".create-btn");
+
   if (type === "reset") {
     dropZone.style.display = "block";
     modalInfo.style.display = "none";
+
     currentSurveyId = null;
     currentSurveyName = "";
     surveyData = null;
@@ -129,7 +128,9 @@ function updateModal(type, error = null) {
   } else {
     dropZone.style.display = "none";
     modalInfo.style.display = "flex";
+
     docTitle.textContent = currentSurveyName;
+
     if (error) {
       status.textContent = `Некорректный шаблон. ${error}`;
       status.classList.add("invalid-template");
@@ -190,6 +191,7 @@ async function uploadFile(file) {
     FILE = file;
 
     updateModal("init");
+
   } catch (error) {
     console.error("Upload error:", error);
     alert(`Ошибка загрузки: ${error.message}`);
