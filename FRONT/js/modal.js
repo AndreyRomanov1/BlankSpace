@@ -29,7 +29,7 @@ async function loadModalContent() {
     
     <div class="modal__info info load_container">
       <div class="info__title">
-        Загружен документ:
+        <p>Загружен документ:</p>
         <div class="info__title-doc"></div>
       </div>
       <div class="info__status"></div>
