@@ -13,7 +13,8 @@ function saveMetrik(id) {
 }
 
 function getMetrikValue(metrikJson) {
-  var result = 0;
+  let result = 0;
+  let value;
   for (value of Object.values(metrikJson)) {
     result += value;
   }
