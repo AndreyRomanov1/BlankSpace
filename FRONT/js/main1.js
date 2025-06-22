@@ -350,7 +350,7 @@ async function finalizeCurrentSurvey() {
       console.error(err)
     }
   } else {
-    const fileURL = URL.createObjectURL(blob);
+    const fileURL = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = fileURL;
     link.download = currentSurveyName;
