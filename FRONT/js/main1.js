@@ -318,10 +318,9 @@ async function finalizeCurrentSurvey() {
 
   console.log(GUID);
 
-  const readableStream = (await fetch(`${baseApiUrl}/FileStorage/${GUID}`))
-    .body;
+  const response = (await fetch(`${baseApiUrl}/FileStorage/${GUID}`));
 
-  const file = await new Response(readableStream).blob();
+  const file = await response.blob();
 
   if (window.showSaveFilePicker) {
     try {
