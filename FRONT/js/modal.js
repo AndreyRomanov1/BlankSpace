@@ -37,7 +37,7 @@ async function loadModalContent() {
     
     <div class="modal__btns">
       <button class="reset-btn modal__btn">Сбросить</button>
-      <button class="create-btn modal__btn">Создать</button>
+      <button class="create-btn modal__btn" disabled>Создать</button>
     </div>
   `;
 
