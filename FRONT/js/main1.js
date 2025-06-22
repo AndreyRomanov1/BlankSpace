@@ -1,30 +1,3 @@
-let isDocumentLoaded = false;
-
-window.addEventListener("load", function () {
-  isDocumentLoaded = true;
-  setTimeout(openModal, 100);
-  updateSubmitButtonState();
-});
-
-function updateSubmitButtonState() {
-  const submitBtn = document.getElementById("submitBtn");
-  if (!submitBtn) return;
-
-  const survey = SURVEYS.find((s) => s.id === currentSurveyId);
-  if (!survey) {
-    submitBtn.disabled = true;
-    return;
-  }
-
-  const missingQuestions = checkSurveyCompletionMain(survey);
-  submitBtn.disabled = !isDocumentLoaded || missingQuestions.length > 0;
-}
-
-function generateQuestionId(prefix, index) {
-  const questionNumber = index + 1;
-  return prefix ? `${prefix}.${questionNumber}` : `q${questionNumber}`;
-}
-
 function renderSurvey(survey) {
   const container = document.getElementById("survey-container");
   container.innerHTML = "";
@@ -36,11 +9,6 @@ function renderSurvey(survey) {
   renderQuestions(survey.json.questions, container, survey, "", "");
 }
 
-const submitBtn = document.getElementById("submitBtn");
-if (submitBtn) {
-  submitBtn.addEventListener("click", finalizeCurrentSurvey);
-  updateSubmitButtonState();
-}
 function removeSubAnswers(answers, question, parentQuestionId, selectedAnswer) {
   if (!question.subQuestionsByAnswer) return;
 
@@ -251,64 +219,10 @@ function handleSubQuestions(
   }
 }
 
-function convertFlatAnswers(flatAnswers) {
-  const nestedAnswers = {};
-
-  Object.keys(flatAnswers).forEach((key) => {
-    const value = flatAnswers[key];
-
-    const keys = key.split(".");
-
-    let current = nestedAnswers;
-
-    for (let i = 0; i < keys.length - 1; i++) {
-      const part = keys[i];
-      if (!(part in current)) {
-        current[part] = {};
-      }
-      current = current[part];
-    }
-
-    current[keys[keys.length - 1]] = value;
-  });
-  return nestedAnswers;
-}
-
-function convertFlatAnswers(flatAnswers) {
-  const nestedAnswers = {};
-  Object.keys(flatAnswers).forEach((key) => {
-    const value = flatAnswers[key];
-    const keys = key.split(".");
-    let current = nestedAnswers;
-    for (let i = 0; i < keys.length - 1; i++) {
-      const part = keys[i];
-
-      if (!(part in current)) {
-        current[part] = {};
-      } else if (typeof current[part] !== "object" || current[part] === null) {
-        current[part] = { _value: current[part] };
-      }
-      current = current[part];
-    }
-    const lastKey = keys[keys.length - 1];
-
-    if (
-      lastKey in current &&
-      typeof current[lastKey] === "object" &&
-      current[lastKey] !== null
-    ) {
-      current[lastKey]._value = value;
-    } else {
-      current[lastKey] = value;
-    }
-  });
-  return nestedAnswers;
-}
-
 async function finalizeCurrentSurvey() {
-  const survey = SURVEYS.find((s) => s.id === currentSurveyId);
+  const survey = globalState.getCurrentSurvey();
   if (!survey) return;
-  const incomplete = checkSurveyCompletionMain(survey);
+  const incomplete = checkSurveyCompletion(survey);
   if (incomplete.length > 0) {
     alert("Ответьте на все вопросы main");
     return;
@@ -316,18 +230,12 @@ async function finalizeCurrentSurvey() {
 
   const GUID = (await submitSurvey(survey.answers, survey.fileId)).fileId;
 
-  console.log(GUID);
-
-  const response = (await fetch(`${baseApiUrl}/FileStorage/${GUID}`));
-
-  const file = await response.blob();
-  console.log(file.size);
-  console.log((await file.text()).slice(0, 500));
+  const file = await apiService.downloadFinalFile(GUID);
 
   if (window.showSaveFilePicker) {
     try {
       const opts = {
-        suggestedName: currentSurveyName,
+        suggestedName: globalState.getCurrentSurvey().name,
         types: [
           {
             description: "Документ",
@@ -346,14 +254,12 @@ async function finalizeCurrentSurvey() {
       await writable.close();
 
       console.log("Файл сохранён пользователем.");
-    } catch (err) {
-      console.error(err)
-    }
+    } catch (err) {}
   } else {
-    const fileURL = URL.createObjectURL(file);
+    const fileURL = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = fileURL;
-    link.download = currentSurveyName;
+    link.download = globalState.getCurrentSurvey().name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -367,22 +273,7 @@ async function submitSurvey(frontendResults, fileId) {
   const backendData = createSurveyResult(frontendResults, fileId);
 
   try {
-    const response = await fetch(`${baseApiUrl}/Survey`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(backendData),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.message || `HTTP error! status: ${response.status}`
-      );
-    }
-
-    return await response.json();
+    return await apiService.submitSurveyData(backendData);
   } catch (error) {
     console.error("Ошибка при отправке опроса:", {
       error: error.message,
@@ -393,7 +284,7 @@ async function submitSurvey(frontendResults, fileId) {
 }
 
 function createSurveyResult(flatAnswers, fileId) {
-  const currentSurvey = SURVEYS.find((s) => s.id === currentSurveyId);
+  const currentSurvey = globalState.getCurrentSurvey();
 
   if (!currentSurvey || !currentSurvey.json || !currentSurvey.json.questions) {
     console.error("Не удалось найти текущий опрос или его структуру вопросов.");
@@ -473,7 +364,7 @@ function createSurveyResult(flatAnswers, fileId) {
   };
 }
 
-function checkSurveyCompletionMain(survey) {
+function checkSurveyCompletion(survey) {
   const missing = [];
   const answers = survey.answers || {};
 
@@ -503,4 +394,18 @@ function checkSurveyCompletionMain(survey) {
   checkQuestions(survey.json.questions, "");
 
   return missing;
+}
+
+function updateSubmitButtonState() {
+  const submitBtn = document.getElementById("submitBtn");
+  if (!submitBtn) return;
+
+  const survey = globalState.getCurrentSurvey();
+  if (!survey) {
+    submitBtn.disabled = true;
+    return;
+  }
+
+  const missingQuestions = checkSurveyCompletion(survey);
+  submitBtn.disabled = missingQuestions.length > 0;
 }

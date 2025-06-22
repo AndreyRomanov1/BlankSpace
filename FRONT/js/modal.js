@@ -1,49 +1,44 @@
+document.addEventListener("modal-loaded", async () => {
+  await new Promise((resolve) => setTimeout(resolve, 3000));
+  openModal();
+  try {
+    initModalEvents();
+  } catch (error) {
+    console.error("Ошибка загрузки модального окна:", error);
+  }
+});
+
 function openModal() {
   const modalOverlay = document.getElementById("modal-overlay");
-  loadModalContent();
   modalOverlay.classList.remove("hidden");
 
-  // Добавляем обработчик клика по оверлею
-  modalOverlay.addEventListener('click', handleOverlayClick);
+  const dropZone = document.querySelector("#dropZone");
+  const modalInfo = document.querySelector(".info");
+  const createBtn = document.querySelector(".create-btn");
+  const fileInput = document.getElementById("fileInput");
+
+  if (dropZone) dropZone.style.display = "block";
+  if (modalInfo) modalInfo.style.display = "none";
+  if (createBtn) createBtn.disabled = true;
+  if (fileInput) fileInput.value = "";
+  modalOverlay.addEventListener("click", handleOverlayClick);
 }
 
 function closeModal() {
   const modalOverlay = document.getElementById("modal-overlay");
   modalOverlay.classList.add("hidden");
-
-  // Удаляем обработчик при закрытии
-  modalOverlay.removeEventListener('click', handleOverlayClick);
+  modalOverlay.removeEventListener("click", handleOverlayClick);
 }
 
-// Новая функция для обработки клика по оверлею
 function handleOverlayClick(e) {
   const modalContent = document.getElementById("modal-content");
-
-  // Проверяем, был ли клик вне модального контента
-  if (!modalContent.contains(e.target)) {
-    closeModal();
-  }
-}
-
-async function loadModalContent() {
-  const modalContent = document.getElementById("modal-content");
-  try {
-    const response = await fetch("components/modal.html");
-    const html = await response.text();
-    modalContent.innerHTML = html;
-    initModalEvents();
-  } catch (error) {
-    console.error("Ошибка загрузки модального окна:", error);
-  }
+  if (!modalContent.contains(e.target)) closeModal();
 }
 
 function initModalEvents() {
   const closeBtn = document.querySelector(".close-btn");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", closeModal);
-  }
+  if (closeBtn) closeBtn.addEventListener("click", closeModal);
 
-  // Остальной код initModalEvents остается без изменений
   const loadContainer = document.querySelector(".load_container");
   const fileInput = document.getElementById("fileInput");
 
@@ -59,20 +54,16 @@ function initModalEvents() {
   loadContainer.addEventListener("drop", (e) => {
     e.preventDefault();
     loadContainer.classList.remove("drag-over");
-    if (e.dataTransfer.files.length) {
-      handleFiles(e.dataTransfer.files);
-    }
+    if (e.dataTransfer.files.length) handleFiles(e.dataTransfer.files);
   });
 
   loadContainer.addEventListener("click", (e) => {
-    e.stopPropagation(); // Предотвращаем закрытие при клике внутри контейнера
+    e.stopPropagation();
     fileInput.click();
   });
 
   fileInput.addEventListener("change", () => {
-    if (fileInput.files.length) {
-      handleFiles(fileInput.files);
-    }
+    if (fileInput.files.length) handleFiles(fileInput.files);
   });
 
   const createBtn = document.querySelector(".create-btn");
@@ -93,19 +84,8 @@ function initModalEvents() {
 }
 
 function showSurvey() {
-  const newSurvey = {
-    id: "survey-" + Date.now(),
-    fileId: currentSurveyId,
-    name: currentSurveyName.slice(0, -5),
-    json: surveyData,
-    answers: {},
-    originalFile: FILE,
-  };
-  SURVEYS.push(newSurvey);
-  saveSurveysToStorage();
-
   loadLeftPanel();
-  loadSurvey(newSurvey.id);
+  loadSurvey();
   changeSurveyHeaderName();
   closeModal();
 }
@@ -114,31 +94,34 @@ function updateModal(type, error = null) {
   const dropZone = document.querySelector("#dropZone");
   const modalInfo = document.querySelector(".info");
   const docTitle = document.querySelector(".info__title-doc");
+  const infoTitle = document.querySelector(".info__title");
   const status = document.querySelector(".info__status");
   const createBtn = document.querySelector(".create-btn");
   if (type === "reset") {
     dropZone.style.display = "block";
     modalInfo.style.display = "none";
-    currentSurveyId = null;
-    currentSurveyName = "";
-    surveyData = null;
-    FILE = null;
+
+    globalState.resetSurveyData();
 
     const fileInput = document.getElementById("fileInput");
     fileInput.value = "";
   } else {
-    dropZone.style.display = "none";
-    modalInfo.style.display = "flex";
-    docTitle.textContent = currentSurveyName;
     if (error) {
+      infoTitle.textContent = "Ошибка загрузки:";
+      infoTitle.append(docTitle);
       status.textContent = `Некорректный шаблон. ${error}`;
       status.classList.add("invalid-template");
       createBtn.disabled = true;
     } else {
+      infoTitle.textContent = "Документ загружен:";
+      infoTitle.append(docTitle);
+      docTitle.textContent = globalState.getCurrentSurvey().name;
       status.textContent = "Шаблон корректен";
       status.classList.remove("invalid-template");
       createBtn.disabled = false;
     }
+    dropZone.style.display = "none";
+    modalInfo.style.display = "flex";
   }
 }
 
@@ -151,47 +134,25 @@ function handleFiles(files) {
 }
 
 async function uploadFile(file) {
-  const formData = new FormData();
-  formData.append("formFile", file);
-
   try {
-    const uploadResponse = await fetch(`${baseApiUrl}/FileStorage`, {
-      method: "POST",
-      body: formData,
-    });
+    let fileId = await apiService.uploadFile(file);
 
-    if (!uploadResponse.ok) {
-      const errorText = await uploadResponse.text();
-      throw new Error(
-        `HTTP error! status: ${uploadResponse.status}, ${errorText}`
-      );
-    }
+    const surveyResponse = await apiService.getSurveyStructure(fileId);
 
-    let fileId = await uploadResponse.text();
-    fileId = fileId.replace(/"/g, "").replace(/'/g, "");
-
-    const surveyResponse = await fetch(
-      `${baseApiUrl}/Survey?fileId=${fileId}`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-
-    if (!surveyResponse.ok) {
-      updateModal("init", `${await surveyResponse.json()}`);
-      return;
-    }
-
-    surveyData = await surveyResponse.json();
-    currentSurveyId = fileId;
-    currentSurveyName = file.name;
-    FILE = file;
+    const newSurvey = {
+      id: "survey-" + Date.now(),
+      fileId: fileId,
+      name: file.name,
+      json: surveyResponse,
+      answers: {},
+      originalFile: file,
+    };
+    globalState.addFile(newSurvey);
+    globalState.setCurrentSurvey(newSurvey.id);
 
     updateModal("init");
   } catch (error) {
     console.error("Upload error:", error);
-    alert(`Ошибка загрузки: ${error.message}`);
+    updateModal("error", error.message);
   }
 }

@@ -1,8 +1,6 @@
 function saveMetrik(id) {
   let currentMetrik = JSON.parse(localStorage.getItem("metrik"));
-  if (!currentMetrik) {
-    currentMetrik = {};
-  }
+  if (!currentMetrik) currentMetrik = {};
   if (typeof currentMetrik[id] == "number") {
     currentMetrik[id] += 1;
   } else {
@@ -14,9 +12,6 @@ function saveMetrik(id) {
 
 function getMetrikValue(metrikJson) {
   var result = 0;
-  for (value of Object.values(metrikJson)) {
-    result += value;
-  }
-
+  for (value of Object.values(metrikJson)) result += value;
   return result;
 }

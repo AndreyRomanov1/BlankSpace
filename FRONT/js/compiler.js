@@ -1,9 +1,10 @@
 class HTMLInclude extends HTMLElement {
   async connectedCallback() {
-    const src = this.getAttribute("src");
+    const tag = this.getAttribute("tag");
+    const src = `components/${tag}.html`;
     const response = await fetch(src);
     this.innerHTML = await response.text();
-    this.dispatchEvent(new Event("html-include-loaded"));
+    this.dispatchEvent(new Event(`${tag}-loaded`, { bubbles: true }));
   }
 }
 

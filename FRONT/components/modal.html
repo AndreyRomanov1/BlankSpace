@@ -1,19 +1,32 @@
-<div class="text_new_doc">Новый документ</div>
-<div class="load_container" id="dropZone">
-  <img src="images/loadDocument.png" alt="load document" class="img_load" />
-  <p class="text_load">Перенесите сюда файл шаблона или кликните для выбора</p>
-  <input type="file" id="fileInput" style="display: none" />
-</div>
+<dialog id="modal-overlay" class="modal-overlay hidden">
+  <div id="modal-window" class="modal-window">
+    <span class="close-btn">&times;</span>
+    <div id="modal-content">
+      <div class="text_new_doc">Новый документ</div>
+      <div class="load_container" id="dropZone">
+        <img
+          src="images/loadDocument.png"
+          alt="load document"
+          class="img_load"
+        />
+        <p class="text_load">
+          Перенесите сюда файл шаблона или кликните для выбора
+        </p>
+        <input type="file" id="fileInput" style="display: none" />
+      </div>
 
-<div class="modal__info info load_container">
-  <div class="info__title">
-    Загружен документ:
-    <div class="info__title-doc"></div>
+      <div class="modal__info info load_container">
+        <div class="info__title">
+          Загружен документ:
+          <div class="info__title-doc"></div>
+        </div>
+        <div class="info__status"></div>
+      </div>
+
+      <div class="modal__btns">
+        <button class="reset-btn modal__btn">Сбросить</button>
+        <button class="create-btn modal__btn">Создать</button>
+      </div>
+    </div>
   </div>
-  <div class="info__status"></div>
-</div>
-
-<div class="modal__btns">
-  <button class="reset-btn modal__btn">Сбросить</button>
-  <button class="create-btn modal__btn">Создать</button>
-</div>
+</dialog>

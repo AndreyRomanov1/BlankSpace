@@ -1,36 +1,72 @@
-let SURVEYS = [];
-let currentSurveyId = null;
-let currentSurveyName = "";
-var surveyData = null;
-var FILE = null;
-var baseApiUrl;
-fetch("config.json")
-  .then((r) => r.json())
-  .then((r) => {
-    baseApiUrl = r.apiUrl;
-  });
+class GlobalState {
+  constructor() {
+    this.currentSurvey = null;
+    this.surveys = [];
+    this.baseApiUrl = null;
+  }
 
-localStorage.setItem("surveys", JSON.stringify(SURVEYS));
+  async setBaseApiUrl() {
+    const resp = await fetch("config.json");
+    const jsonResp = await resp.json();
+    this.baseApiUrl = jsonResp.apiUrl;
+  }
+
+  getSurvey(id) {
+    return this.surveys.filter((s) => s.id == id)[0];
+  }
+
+  setCurrentSurvey(id) {
+    this.currentSurvey = id;
+    saveSurveysToStorage();
+  }
+
+  getCurrentSurvey() {
+    return this.getSurvey(this.currentSurvey);
+  }
+
+  addFile(survey) {
+    this.surveys.push(survey);
+    saveSurveysToStorage();
+  }
+
+  setAllSurveys(surveys) {
+    this.surveys = [...surveys];
+    saveSurveysToStorage();
+  }
+
+  resetSurveyData() {
+    this.deleteSurvey(this.currentSurvey);
+    saveSurveysToStorage();
+  }
+
+  deleteSurvey(surveyId) {
+    const surveyWasCurrent = this.currentSurvey === surveyId;
+
+    this.surveys = this.surveys.filter((survey) => survey.id != surveyId);
+    if (surveyWasCurrent) {
+      this.currentSurvey = null;
+    }
+
+    saveSurveysToStorage();
+  }
+
+  changeSurveyName(name, surveyId) {
+    const survey = this.getSurvey(surveyId);
+    if (survey) {
+      survey.name = name;
+    }
+    saveSurveysToStorage();
+  }
+}
+
+const globalState = new GlobalState();
+loadSurveysFromStorage();
 
 function loadSurveysFromStorage() {
   const data = localStorage.getItem("surveys");
-  SURVEYS = data ? JSON.parse(data) : [];
+  globalState.setAllSurveys(data ? JSON.parse(data) : []);
 }
 
 function saveSurveysToStorage() {
-  localStorage.setItem("surveys", JSON.stringify(SURVEYS));
-}
-
-function clearSurveyPlace() {
-  const container = document.getElementById("survey-container");
-  container.innerHTML = "";
-}
-
-function changeSurveyHeaderName() {
-  const surveNameHolder = document.querySelector(".nameFile");
-  if (currentSurveyName.length > 5) {
-    surveNameHolder.textContent = `${currentSurveyName.slice(0, 5)}...`;
-  } else {
-    surveNameHolder.textContent = currentSurveyName;
-  }
+  localStorage.setItem("surveys", JSON.stringify(globalState.surveys));
 }

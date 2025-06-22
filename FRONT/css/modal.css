@@ -9,14 +9,23 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.5s ease, visibility 0.5s;
 }
 .modal-window {
-  background-color: #fff;
+  background-color: var(--white);
   border-radius: 10px;
   width: 900px;
   padding: 20px;
   margin: 0 10px;
   position: relative;
+
+  opacity: 1;
+  transform: scale(1);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.3s ease-out;
 }
 .modal-window .close-btn {
   position: absolute;
@@ -25,22 +34,30 @@
   cursor: pointer;
   font-size: 30px;
 }
+
 .hidden {
-  display: none;
+  opacity: 0;
+  visibility: hidden;
 }
+
+.hidden .modal {
+  opacity: 0;
+  transform: scale(0.7);
+}
+
 .load_container {
   box-sizing: border-box;
   width: 100%;
   height: 300px;
   border-radius: 10px;
-  background-color: #a8accc;
+  background-color: var(--load-container-bg);
   text-align: center;
   padding: 90px 2px 0 2px;
   cursor: pointer;
   margin: 20px 0 20px 0;
 }
 .load_container.drag-over {
-  border: 2px dashed #1ac14c;
+  border: 2px dashed var(--green);
 }
 .img_load {
   width: 80px;
@@ -49,7 +66,7 @@
 .text_load {
   font-size: 20px;
   margin-top: 10px;
-  color: white;
+  color: var(--white);
   padding-top: 10px;
 }
 .text_new_doc {
@@ -62,20 +79,20 @@
   padding: 10px;
   font-size: 20px;
   font-family: Inter, sans-serif;
-  color: white;
+  color: var(--white);
   border: none;
   border-radius: 5px;
   cursor: pointer;
   flex-grow: 1;
 }
 .create-btn {
-  background-color: #1ac14c;
+  background-color: var(--green);
 }
 .create-btn:hover {
-  background-color: #00dd09;
+  background-color: var(--green);
 }
 .reset-btn {
-  background-color: #3d69b8;
+  background-color: var(--dark-blue);
 }
 .reset-btn:hover {
   background-color: #27519e;
@@ -93,18 +110,9 @@
   flex-direction: column;
   padding: 5%;
   font-size: 20px;
-  color: white;
+  color: var(--white);
   align-items: start;
   height: 200px;
-}
-
-.modal__btns {
-}
-
-.modal__btn {
-}
-
-.info {
 }
 
 .info__title {
@@ -121,28 +129,24 @@
 
 .info__status {
   margin: auto 0 0 0;
-  color: #388e3c;
+  color: var(--green);
   font-weight: 750;
   font-size: 20px;
 }
 
 .info__status.invalid-template {
-  color: #d00000;
+  color: var(--red);
   font-weight: bold;
 }
 
 .create-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-  background-color: #cccccc;
+  background-color: var(--light-gray-hover);
 }
 
-.load {
-}
-
-.load_container {
-}
-.create-btn {
-}
-.reset-btn {
+@media (max-width: 768px) {
+  .info__status {
+    font-size: 14px;
+  }
 }

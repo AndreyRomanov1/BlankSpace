@@ -1,33 +1,32 @@
-document.addEventListener("DOMContentLoaded", () => {
-  loadSurveysFromStorage();
-
-  loadComponent(
-    "components/header.html",
-    document.getElementById("header-container")
+document.addEventListener("DOMContentLoaded", async () => {
+  await new Promise((resolve) =>
+    setTimeout(() => {
+      const preloader = document.getElementById("preloader");
+      const appContainer = document.getElementById("app");
+      preloader.style.display = "none";
+      appContainer.classList.remove("hidden");
+      resolve();
+    }, 3000)
   );
+  await globalState.setBaseApiUrl();
+  await apiService.synchronizeSurveysWithServer();
   loadLeftPanel();
   loadSurveyMenu();
 
-  if (currentSurveyId) {
-    loadSurvey(currentSurveyId);
+  const currentSurvey = globalState.getCurrentSurvey();
+  if (currentSurvey) {
+    loadSurvey();
+  } else {
+    clearSurveyPlace();
+    changeSurveyHeaderName();
+    updateSubmitButtonState();
   }
 });
 
-async function loadComponent(url, container) {
-  try {
-    const response = await fetch(url);
-    const html = await response.text();
-    container.innerHTML = html;
-  } catch (error) {
-    console.error("Ошибка загрузки компонента:", url, error);
-  }
-}
-
-function loadSurvey(surveyId) {
-  currentSurveyId = surveyId;
-  const survey = SURVEYS.find((s) => s.id === surveyId);
+function loadSurvey() {
+  const survey = globalState.getCurrentSurvey();
   if (survey) {
     renderSurvey(survey);
-    updateLeftPanelActive(surveyId);
+    updateLeftPanelActive(survey.id);
   }
 }

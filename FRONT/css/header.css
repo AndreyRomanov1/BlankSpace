@@ -1,5 +1,5 @@
 .header {
-  background-color: #436296;
+  background-color: var(--dark-blue);
   height: 60px;
   padding-top: 5px;
   position: fixed;
@@ -9,6 +9,7 @@
   z-index: 1000;
   transition: all 0.3s ease;
 }
+
 .header__container {
   display: flex;
   justify-content: space-between;
@@ -17,8 +18,9 @@
   margin: 0 auto;
   padding: 0 15px 0 20px;
 }
+
 .nameFile {
-  color: white;
+  color: var(--white);
   font-size: 30px;
   font-family: Inter, sans-serif;
   margin-right: auto;
@@ -32,25 +34,30 @@
   height: 50px;
   font-size: 20px;
   font-family: Inter, sans-serif;
-  background-color: #1ac14c;
-  color: white;
+  background-color: var(--green);
+  color: var(--white);
   border: none;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.3s;
-  box-shadow: #515151 1px 2px 3px;
+  box-shadow: var(--shadow-gray) 1px 2px 3px;
 }
 
 .done:active,
 .done:hover {
-  background-color: #00dd09;
+  background-color: var(--green-hover);
 }
 
 @media (max-width: 768px) {
   .header {
     width: calc(100% - 200px);
     left: 200px;
+  }
+
+  .done {
+    width: 80px;
+    font-size: 16px;
   }
 }

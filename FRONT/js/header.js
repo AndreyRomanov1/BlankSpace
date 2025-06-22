@@ -1,8 +1,7 @@
-document.addEventListener("DOMContentLoaded", () => {
-  setTimeout(() => {
-    const submitBtn = document.querySelector("#submitBtn");
-    submitBtn.addEventListener("click", () => {
-      finalizeCurrentSurvey();
-    });
-  }, 500);
+document.addEventListener("header-loaded", () => {
+  const submitBtn = document.getElementById("submitBtn");
+  if (submitBtn) {
+    submitBtn.addEventListener("click", finalizeCurrentSurvey);
+    updateSubmitButtonState();
+  }
 });

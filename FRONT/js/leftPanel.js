@@ -11,7 +11,7 @@ function setupUploadButtons() {
 
 function createSurveyTitile(survey) {
   const span = document.createElement("span");
-  span.textContent = `${survey.name || "Новый опрос"}`;
+  span.textContent = `${survey.name.replace(/\.[^/.]+$/, "") || "Новый опрос"}`;
   return span;
 }
 
@@ -19,7 +19,20 @@ function createSurveyMenu(survey) {
   const menu = document.createElement("div");
   const menuIcon = document.createElement("img");
   menuIcon.src = "../images/surveyMenuImg.svg";
-  menu.append(menuIcon);
+  const staticIcon = document.createElement("img");
+  staticIcon.src = "../images/surveyMenuImg.svg";
+  staticIcon.setAttribute("alt", "меню опроса");
+  staticIcon.classList.add("survey-menu-icon", "static-icon");
+
+  const animatedIcon = document.createElement("object");
+  animatedIcon.type = "image/svg+xml";
+  animatedIcon.data = "../images/animatedMenu.svg";
+  animatedIcon.classList.add("survey-menu-icon", "animated-icon");
+  animatedIcon.setAttribute("role", "img");
+  animatedIcon.setAttribute("aria-label", "анимированное меню");
+
+  menu.append(staticIcon);
+  menu.append(animatedIcon);
 
   const menuList = document.querySelector(".survey-item__menu-list");
 
@@ -41,6 +54,15 @@ function loadSurveyMenu() {
   const renameSurvey = menuListItems[0];
   const deleteSurvey = menuListItems[1];
 
+  document.addEventListener("click", (event) => {
+    const clickedOnMenuIcon = event.target.closest(".survey-item__menu");
+
+    const clickedOnMenuList = event.target.closest(".survey-item__menu-list");
+    if (!clickedOnMenuIcon && !clickedOnMenuList) {
+      menuList.classList.add("hide");
+    }
+  });
+
   document.addEventListener("keydown", function (event) {
     const currentSurvey = document.querySelector(
       `.survey-item[data-survey-id='${menuList.dataset.surveyId}']`
@@ -50,35 +72,15 @@ function loadSurveyMenu() {
     if (event.key === "Enter") {
       if (surveyTitle.contentEditable) {
         surveyTitle.contentEditable = false;
-        for (let survey of SURVEYS) {
-          if (survey.id == menuList.dataset.surveyId) {
-            survey.name = surveyTitle.textContent;
-            currentSurveyName = surveyTitle.textContent;
-          }
-        }
+
+        globalState.changeSurveyName(
+          surveyTitle.textContent,
+          menuList.dataset.surveyId
+        );
         changeSurveyHeaderName();
       }
     }
   });
-
-  // document.addEventListener("click", (e) => {
-  //   const currentSurvey = document.querySelector(
-  //     `.survey-item[data-survey-id='${menuList.dataset.surveyId}']`
-  //   );
-  //   if (!currentSurvey) return;
-  //   const surveyTitle = currentSurvey.querySelector("span");
-  //   if (![...e.target.classList].includes("survey-item")) {
-  //     if (surveyTitle.contentEditable) {
-  //       surveyTitle.contentEditable = false;
-  //       for (let survey of SURVEYS) {
-  //         if (survey.id == menuList.dataset.surveyId) {
-  //           survey.name = surveyTitle.textContent;
-  //         }
-  //       }
-  //       changeSurveyHeaderName();
-  //     }
-  //   }
-  // });
 
   renameSurvey.addEventListener("click", () => {
     const currentSurvey = document.querySelector(
@@ -91,42 +93,33 @@ function loadSurveyMenu() {
   });
 
   deleteSurvey.addEventListener("click", () => {
-    SURVEYS = SURVEYS.filter(
-      (survey) => survey.id != menuList.dataset.surveyId
-    );
-    currentSurveyId = null;
-    currentSurveyName = "";
-    surveyData = null;
-    FILE = null;
-
-    saveSurveysToStorage();
+    menuList.classList.add("hide");
+    globalState.deleteSurvey(menuList.dataset.surveyId);
     loadLeftPanel();
     clearSurveyPlace();
     changeSurveyHeaderName();
     updateSubmitButtonState();
-
-    menuList.classList.toggle("hide");
   });
 }
 
 function loadLeftPanel() {
   const leftPanel = document.getElementById("left-panel");
   leftPanel.innerHTML = `
-      <div class = "left-panel-header">
-        <div class="panel-toggle">
+      <header class = "left-panel-header">
+        <button class="panel-toggle">
             <img src="../images/toggleLeftIcon.png" alt="Toggle" class="left-panel-icon toggle-icon">
-        </div>
-        <div class="text-opros">Сессии</div>
+        </button>
+        <h2 class="text-opros">Сессии</h2>
         <button class="upload">
             <img src="../images/newFileIcon.png" alt="Upload file" class="left-panel-icon">
         </button>
-      </div>
+      </header>
       <div class="collapsed-upload-container">
         <button class="upload collapsed-upload">
             <img src="../images/newFileIcon.png" alt="Upload file" class="left-panel-icon">
         </button>
       </div>
-      <div id="survey-list"></div>
+      <ul id="survey-list"></>
     `;
 
   const toggleBtn = document.querySelector(".panel-toggle");
@@ -214,7 +207,7 @@ function loadLeftPanel() {
   setupUploadButtons();
 
   const surveyList = document.getElementById("survey-list");
-  SURVEYS.forEach((survey) => {
+  globalState.surveys.forEach((survey) => {
     const surveyElem = document.createElement("div");
     surveyElem.className = "survey-item";
     surveyElem.dataset.surveyId = survey.id;
@@ -223,10 +216,10 @@ function loadLeftPanel() {
     surveyElem.append(surveyTitle);
     surveyElem.append(surveyMenu);
     surveyElem.addEventListener("click", () => {
-      console.log(survey.name);
-      currentSurveyName = survey.name;
+      globalState.setCurrentSurvey(survey.id);
       changeSurveyHeaderName();
-      loadSurvey(survey.id);
+      loadSurvey();
+      updateSubmitButtonState();
     });
     surveyList.appendChild(surveyElem);
   });
@@ -241,77 +234,4 @@ function updateLeftPanelActive(surveyId) {
       item.classList.remove("active");
     }
   });
-}
-
-function finalizeSurvey(surveyId) {
-  const survey = SURVEYS.find((s) => s.id === surveyId);
-  if (!survey) return;
-  const incomplete = checkSurveyCompletion(survey);
-  if (incomplete.length > 0) {
-    alert("Ответьте на все вопросы left");
-  } else {
-    console.log("Опрос завершён. Итоговые ответы:", survey.answers);
-  }
-}
-
-function generateQuestionId(prefix, index) {
-  const questionNumber = index + 1;
-  return prefix ? `${prefix}.${questionNumber}` : `q${questionNumber}`;
-}
-
-function checkSurveyCompletion(survey) {
-  console.log("--- Starting Check ---");
-  const missing = [];
-  const answers = survey.answers || {};
-  console.log("Current Answers:", JSON.stringify(answers));
-
-  function checkQuestions(questions, prefix = "") {
-    if (!questions || questions.length === 0) {
-      return;
-    }
-
-    questions.forEach((q, index) => {
-      const qId = generateQuestionId(prefix, index);
-      const currentAnswer = answers[qId];
-
-      console.log(
-        `Checking QID: ${qId} | Answer: ${currentAnswer} | Type: ${q.questionType}`
-      );
-
-      if (!currentAnswer || currentAnswer === "") {
-        console.warn(`MISSING or empty answer for QID: ${qId}`);
-        missing.push(qId);
-      }
-
-      if (
-        q.questionType === 0 &&
-        currentAnswer &&
-        q.subQuestionsByAnswer &&
-        q.subQuestionsByAnswer[currentAnswer]
-      ) {
-        console.log(
-          `Recursion into branch for QID: ${qId}, Answer: ${currentAnswer}`
-        );
-        checkQuestions(q.subQuestionsByAnswer[currentAnswer], qId);
-      } else if (q.questionType === 0) {
-        if (!currentAnswer) {
-          console.log(
-            `No recursion for QID: ${qId} because answer is missing.`
-          );
-        } else if (
-          !q.subQuestionsByAnswer ||
-          !q.subQuestionsByAnswer[currentAnswer]
-        ) {
-          console.log(
-            `No recursion for QID: ${qId} because no subQuestions defined for answer: ${currentAnswer}`
-          );
-        }
-      }
-    });
-  }
-
-  checkQuestions(survey.json.questions, "");
-  console.log("--- Check Finished ---");
-  console.log("Final Missing IDs:", missing);
-  return missing;
 }

@@ -9,36 +9,43 @@
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/leftPanel.css" />
     <link rel="stylesheet" href="css/modal.css" />
+    <script src="js/compiler.js"></script>
   </head>
   <body>
-    <div id="app">
+    <div id="app" class="hidden">
       <!-- Левая панель с опросами -->
-      <div id="left-panel"></div>
+      <aside id="left-panel"></aside>
       <!-- Основной контент (хедер + опрос) -->
-      <div id="main-content">
-        <div id="header-container"></div>
+      <main id="main-content">
+        <html-include tag="header"></html-include>
         <div id="survey-container"></div>
-      </div>
+      </main>
     </div>
     <!-- Модальное окно для загрузки файла -->
-    <div id="modal-overlay" class="modal-overlay hidden">
-      <div id="modal-window" class="modal-window">
-        <span class="close-btn">&times;</span>
-        <div id="modal-content"></div>
-      </div>
-    </div>
+    <html-include tag="modal"></html-include>
 
     <ul class="survey-item__menu-list">
       <li>переименовать</li>
       <li>удалить</li>
     </ul>
 
-    <script src="js/globals.js" defer></script>
-    <script src="js/app.js" defer></script>
-    <script src="js/header.js" defer></script>
-    <script src="js/leftPanel.js" defer></script>
+    <div id="preloader">
+      <object
+        type="image/svg+xml"
+        data="../images/animatedLogo.svg"
+        role="img"
+        aria-label="анимированная заставка"
+      ></object>
+    </div>
+
+    <script src="js/globals.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/apiService.js"></script>
+    <script src="js/main1.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/leftPanel.js"></script>
     <script src="js/metrik6.js"></script>
-    <script src="js/main1.js" defer></script>
-    <script src="js/modal.js" defer></script>
+    <script src="js/modal.js"></script>
   </body>
 </html>

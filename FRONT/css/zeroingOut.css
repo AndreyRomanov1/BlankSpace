@@ -32,7 +32,7 @@ body {
   line-height: 1;
   font-size: 16px;
   color: black;
-  overflow: hidden
+  overflow: hidden;
 }
 
 /*----контейнер-----------------------------------------*/
@@ -41,4 +41,30 @@ body {
   margin: 0 auto;
   padding: 0 10px;
   box-sizing: content-box;
+}
+
+/*--переменные-----------------------------------------------*/
+:root {
+  /* Основные цвета */
+  --white: white;
+  --green: #1ac14c;
+  --green-hover: #00dd09;
+
+  /* Оттенки синего */
+  --blue: #0050c1;
+  --dark-blue: #436296;
+  --dark-blue-hover: #6b94e3;
+  --deep-blue: #0b3a8a;
+  --darker-blue: #013183;
+  --bright-blue-hover: #367bf3;
+
+  /* Нейтральные/дополнительные цвета */
+  --shadow-gray: #515151;
+  --light-gray-hover: #bdbdbd;
+  --survey-item-hover-bg: #a0a0a0;
+  --active-item-bg: rgba(170, 181, 223, 0.4);
+  --semi-transparent-white: rgba(255, 255, 255, 0.5);
+  --load-container-bg: #a8accc;
+  --black: black;
+  --red: #d00000;
 }
