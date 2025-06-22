@@ -124,9 +124,10 @@
   color: #388e3c;
   font-weight: 750;
   font-size: 20px;
+  text-align: left;
 }
 
-.info__status .invalid-template {
+.info__status.invalid-template {
   color: #d00000;
   font-weight: bold;
 }
