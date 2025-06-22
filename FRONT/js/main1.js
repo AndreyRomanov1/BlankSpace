@@ -321,6 +321,8 @@ async function finalizeCurrentSurvey() {
   const response = (await fetch(`${baseApiUrl}/FileStorage/${GUID}`));
 
   const file = await response.blob();
+  console.log(file.size);
+  console.log((await file.text()).slice(0, 500));
 
   if (window.showSaveFilePicker) {
     try {
@@ -344,7 +346,9 @@ async function finalizeCurrentSurvey() {
       await writable.close();
 
       console.log("Файл сохранён пользователем.");
-    } catch (err) {}
+    } catch (err) {
+      console.error(err)
+    }
   } else {
     const fileURL = URL.createObjectURL(blob);
     const link = document.createElement("a");
