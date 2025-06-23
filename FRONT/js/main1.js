@@ -263,9 +263,7 @@ async function finalizeCurrentSurvey() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    alert(
-      "Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка."
-    );
+    console.warn("Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка.");
   }
 }
 
