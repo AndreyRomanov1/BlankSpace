@@ -77,10 +77,19 @@ class ApiService {
 
     for (const survey of surveysFromStorage) {
       if (survey) {
-        const item = {
-          survey: survey,
-          file: await this.getSurveyStructure(survey.fileId),
-        };
+        let item;
+        try {
+          const tryToGet = await this.getSurveyStructure(survey.fileId);
+          item = {
+            survey: survey,
+            file: tryToGet,
+          };
+        } catch {
+          item = {
+            survey: survey,
+            file: false,
+          };
+        }
         results.push(item);
       }
     }
