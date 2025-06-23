@@ -77,11 +77,17 @@ class ApiService {
 
     for (const survey of surveysFromStorage) {
       if (survey) {
-        const item = {
-          survey: survey,
-          file: await this.getSurveyStructure(survey.fileId),
-        };
-        results.push(item);
+        try {
+          const item = {
+            survey: survey,
+            file: await this.getSurveyStructure(survey.fileId),
+          };
+          results.push(item);
+        }
+        catch {
+          console.warn(`Ошибка при попытке синхронизации. Удалю из хранилища опрос ${survey.id} (${survey.fileId})`)
+          globalState.deleteSurvey(survey.id)
+        }
       }
     }
 
