@@ -256,16 +256,14 @@ async function finalizeCurrentSurvey() {
       console.log("Файл сохранён пользователем.");
     } catch (err) {}
   } else {
-    const fileURL = URL.createObjectURL(blob);
+    const fileURL = URL.createObjectURL(file);
     const link = document.createElement("a");
     link.href = fileURL;
     link.download = globalState.getCurrentSurvey().name;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    alert(
-      "Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка."
-    );
+    console.warn("Ваш браузер не поддерживает showSaveFilePicker. Выполнена обычная загрузка.");
   }
 }
 
